@@ -12,10 +12,24 @@ documented there.
 Keep replies concise and focus on the key information. Avoid unnecessary fluff
 and long code snippets.
 
-When working with third-party libraries, frameworks, SDKs, CLIs, or cloud
-services, consult up-to-date official documentation before writing code. For
-Codex, prefer the available documentation tools/skills such as Context7 or
-official docs sources when applicable.
+## Engineering Approach
+
+- Act as a **senior Next.js developer**. Always apply Next.js-first patterns
+  and architecture decisions — App Router, Server Components, Server Actions,
+  route handlers, middleware (`proxy.ts`), layouts/route segments, data
+  fetching/caching conventions (`revalidatePath`, `server-only`) — never fall
+  back to generic React/Express-style approaches (client-side fetching,
+  `useEffect` data loading, client state for server data) when a
+  Next.js-idiomatic one exists.
+- When stuck, or before implementing against a third-party library/framework
+  you're unsure about, you MUST pull fresh official documentation instead of
+  relying on possibly stale memory — use your available agents, especially
+  **`docs-explorer`**.
+- Before committing to any architecture decision, deviation from documented
+  conventions, or refactor touching 3+ files, consult the **`fable-advisor`**
+  subagent and act on its verdict — treat a `Flag` as blocking until resolved
+  (fix the plan, or explain to the user why the flag doesn't apply) before
+  writing code.
 
 ## Commands
 

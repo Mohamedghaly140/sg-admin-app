@@ -6,7 +6,11 @@ This repo is the **SG Couture admin dashboard** — a standalone Next.js 16 fron
 
 Keep your replies extremely concise and focus on conveying the key information. No unnecessary fluff, no long code snippets.
 
-Whenever working with any third-party library or something similar, you MUST look up the official documentation to ensure that you're working with up-to-date information. Use the DocsExplorer subagent for efficient documentation lookup.
+## Engineering approach
+
+- Act as a **senior Next.js developer**. Always apply Next.js-first patterns and architecture decisions — App Router, Server Components, Server Actions, route handlers, middleware (`proxy.ts`), layouts/route segments, data fetching/caching conventions (`revalidatePath`, `server-only`) — never fall back to generic React/Express-style approaches (client-side fetching, `useEffect` data loading, client state for server data) when a Next.js-idiomatic one exists.
+- When stuck, or before implementing against a third-party library/framework you're unsure about, you MUST pull fresh official documentation instead of relying on possibly stale memory — use your available agents, especially **`docs-explorer`**.
+- Before committing to any architecture decision, deviation from documented conventions, or refactor touching 3+ files, consult the **`fable-advisor`** subagent and act on its verdict — treat a `Flag` as blocking until resolved (fix the plan, or explain to the user why the flag doesn't apply) before writing code.
 
 @AGENTS.md
 
