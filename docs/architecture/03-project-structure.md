@@ -40,6 +40,7 @@ docs/                     # this documentation
 | `submit-button/` | `SubmitButton` — `useFormStatus` pending spinner |
 | `confirm-dialog/` | `ConfirmDialog` — AlertDialog wrapper for destructive actions |
 | `empty-state/` | `EmptyState` — icon + title + description + optional action |
+| `image-uploader/` | `ImageUploader` — signed Cloudinary upload UI with progress and hidden `imageId` / `imageUrl` fields |
 | `spinner/` | `Spinner` — centered loading indicator |
 | `redirect-toast/` | `RedirectToast` — shows the "toast" cookie message after a redirect |
 

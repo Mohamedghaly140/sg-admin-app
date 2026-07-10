@@ -27,7 +27,9 @@ Flow, per [`integration/admin/10-uploads.md`](../integration/admin/10-uploads.md
 4. Server Action  → product/category endpoint receives imageId + imageUrl
 ```
 
-The shared **`ImageUploader`** client component (`components/shared/image-uploader/`, built in phase 2) encapsulates steps 1–3: it takes `folder` and an `onUploaded({ imageId, imageUrl })` callback (or hidden-input names), calls a Server Action for the signature, uploads with progress, and previews the result.
+The shared **`ImageUploader`** client component (`components/shared/image-uploader/`, built in phase 2) encapsulates steps 1–3: it takes `folder` plus hidden-input names for `imageId`/`imageUrl`, calls a Server Action for the signature, uploads with progress, and previews the result.
+
+`getUploadSignature` is the sanctioned Server Action exception to the standard `ActionState` / `useActionState` form pattern: it is an imperative RPC invoked when a file is selected, returns `{ ok: true, data } | { ok: false, message }`, and still redirects for auth/account-disabled failures.
 
 ### Rules (from the API contract — enforced client-side where noted)
 
@@ -35,4 +37,4 @@ The shared **`ImageUploader`** client component (`components/shared/image-upload
 - **Max 5 MB — enforce client-side before uploading** (not part of the signature).
 - **Fresh signature per upload** — signatures are time-boxed; never cache one for a batch.
 - Send the signed fields (`timestamp`, `folder`, `allowed_formats`) **exactly as returned** — any change invalidates the signature.
-- Upload as late as UX allows (on save, not on file-pick) — an abandoned form after upload orphans the asset in Cloudinary.
+- `ImageUploader` uploads on file-select so the outer form can keep normal `useActionState` / `SubmitButton` submit wiring. An abandoned form after upload can orphan the asset in Cloudinary; this is an accepted tradeoff for this component.
