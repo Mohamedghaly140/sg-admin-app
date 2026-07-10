@@ -1,0 +1,62 @@
+# 03 — URL State (nuqs)
+
+All filter, pagination, sort, and search state lives in the URL via **nuqs v2** — shareable, bookmarkable, and readable server-side. Never `useState` for any of it.
+
+## Pattern: one schema per feature, used on both sides
+
+```ts
+// features/orders/hooks/use-orders-params.ts
+import { createSearchParamsCache, parseAsInteger, parseAsString } from "nuqs/server";
+import { useQueryStates } from "nuqs";
+
+export const ordersParams = {
+  status: parseAsString.withDefault(""),
+  paymentMethod: parseAsString.withDefault(""),
+  search: parseAsString.withDefault(""),
+  from: parseAsString.withDefault(""),
+  to: parseAsString.withDefault(""),
+  page: parseAsInteger.withDefault(1),
+  limit: parseAsInteger.withDefault(20),
+};
+
+// Server Components: parse searchParams
+export const loadOrdersParams = createSearchParamsCache(ordersParams);
+
+// Client Components: read + write
+export const useOrdersParams = () =>
+  useQueryStates(ordersParams, { shallow: false });
+```
+
+- **`shallow: false` is required** on client writers — it makes URL changes hit the server so Server Components re-fetch. Without it, filters change the URL but not the data.
+- Server side: `page.tsx` awaits `loadOrdersParams(searchParams)` and passes typed params to the feature, which forwards them to its `queries/` functions.
+
+```tsx
+// features/orders/components/orders-status-filter.tsx
+"use client";
+const [{ status }, setParams] = useOrdersParams();
+// changing any filter resets the page:
+setParams({ status: next, page: 1 });
+```
+
+## Conventions
+
+- **Param names match the API contract exactly** — the URL param is the query param sent to the API. Check the feature's `integration/admin/` doc before naming anything.
+- **Reset `page` to 1** whenever any other filter changes.
+- Defaults are explicit via `.withDefault(...)`; empty string = "no filter" → **omit** the param from the API call (don't send `status=`).
+- Debounce free-text `search` inputs (~300 ms) before writing to the URL.
+- `NuqsAdapter` (from `nuqs/adapters/next/app`) wraps the app once in `app/layout.tsx` — phase 1.
+
+## Params per screen (from the API contract)
+
+| Screen | Params | API doc |
+|---|---|---|
+| Products | `search`, `status`, `categoryId`, `featured`, `page`, `limit` | [§03](../integration/admin/03-products.md) |
+| Categories | `search`, `page`, `limit` | [§04](../integration/admin/04-categories.md) |
+| Orders | `status`, `paymentMethod`, `isPaid`, `search`, `from`, `to`, `page`, `limit` | [§05](../integration/admin/05-orders.md) |
+| Coupons | `search`, `status` (lifecycle filter), `page`, `limit` | [§06](../integration/admin/06-coupons.md) |
+| Shipping zones | `search`, `page`, `limit` | [§07](../integration/admin/07-shipping-zones.md) |
+| Customers | `search`, `active`, `page`, `limit` | [§08](../integration/admin/08-customers.md) |
+| Staff users | `search`, `role`, `active`, `page`, `limit` | [§09](../integration/admin/09-staff-users.md) |
+| Analytics | `from`, `to` (`YYYY-MM-DD` — no range presets; the server derives grouping) | [§02](../integration/admin/02-analytics.md) |
+
+If a param above disagrees with the feature's `integration/admin/` doc, the API doc wins — update this table.

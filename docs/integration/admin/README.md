@@ -8,11 +8,14 @@ This folder is the frontend-facing integration guide for every admin API. It des
 
 ## Relationship to other docs
 
+<!-- sg-admin-app local patch: this folder is vendored from the backend repo. Rows pointing
+     to backend-repo-only files (API_SPECIFICATION.md, api/admin/) were removed because they
+     don't exist here. Re-apply this patch after every re-sync from the backend. -->
+
 | Doc | Role |
 |---|---|
-| [`../../API_SPECIFICATION.md`](../../API_SPECIFICATION.md) | **Authoritative** backend contract (storefront + admin, backend-maintained). If this guide ever disagrees with it, the spec wins — and please report the drift. |
 | Swagger UI at **`/api/docs`** | Interactive, always-current reference generated from code. Raw OpenAPI JSON at `/api/docs-json`. Use it to try requests with a Bearer token. |
-| [`../../api/admin/`](../../api/admin/) | ⚠️ **Frozen historical contract** from the old Next.js MVP. Its envelope (`{ success: true }`), pagination, and error codes are **outdated — do not integrate from it.** This folder supersedes it for frontend work. |
+| `API_SPECIFICATION.md` (backend repo) | **Authoritative** backend contract (storefront + admin, backend-maintained). If this guide ever disagrees with it, the spec wins — and please report the drift. |
 
 ## Read this first
 

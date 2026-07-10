@@ -2,128 +2,48 @@
 
 ## Goal
 
-Stand up the project shell, the database schema, authentication, and a read-only product catalog. By the end of this phase the app should:
+Everything cross-cutting: a signed-in MANAGER/ADMIN sees an empty but fully navigable, role-aware app, and one smoke read proves the API client works end to end.
 
-- Run locally and deploy to Vercel.
-- Authenticate users via Clerk.
-- Show products and categories on the storefront.
-- Have one matching API route handler for every web feature shipped.
+## Consumes
 
-## Dependencies
-
-None — this is the starting phase.
-
-## Deliverables
-
-- Next.js 16 + Bun + Tailwind CSS v4 + shadcn/ui project running.
-- Prisma schema applied to a Supabase Postgres.
-- `humanOrderId` sequence created.
-- Clerk wired up: sign-in, sign-up, proxy guard.
-- Clerk webhook → user sync.
-- Storefront pages: `/`, `/products`, `/products/[slug]`, `/categories/[slug]`.
-- API route handlers: `/api/products`, `/api/products/[slug]`, `/api/categories`, `/api/webhooks/clerk`.
-
-## Linked docs
-
-- `architecture/01-overview.md`
-- `architecture/02-tech-stack.md`
-- `architecture/03-system-architecture.md`
-- `architecture/05-database-schema.md`
-- `architecture/07-project-structure.md`
-- `architecture/08-conventions.md`
-- `architecture/09-environment-and-deploy.md`
-- `integrations/01-clerk-auth.md`
-- `integrations/05-nuqs-url-state.md`
-- `storefront/00-overview.md`
-- `storefront/01-home.md`
-- `storefront/02-product-catalog.md`
-- `storefront/03-product-detail.md`
+[`integration/admin/00-conventions.md`](../integration/admin/00-conventions.md) · all of [`architecture/`](../architecture/01-overview.md) · [`conventions/01-data-flow.md`](../conventions/01-data-flow.md), [`02-forms.md`](../conventions/02-forms.md), [`04-ui-and-styling.md`](../conventions/04-ui-and-styling.md) · [`screens/00-overview.md`](../screens/00-overview.md)
 
 ## Tasks
 
-### 1. Project shell
+### 1. Environment & API client
 
-- [ ] `bun create next-app@latest` with TypeScript, Tailwind, App Router, no `src/`.
-- [ ] Set up `tailwind.config.ts` for v4 and shadcn/ui.
-- [ ] Install shadcn/ui and add base components (button, input, dialog, sheet, badge, table, dropdown-menu).
-- [ ] Configure `tsconfig.json` with `strict: true`, no `any`.
-- [ ] Add `package.json` scripts using `bunx` (no `npx`).
-- [ ] Set up the project directory layout per `architecture/07-project-structure.md`. Create empty `features/`, `lib/`, `emails/`, `types/` directories with placeholder `.gitkeep` files where empty.
+- [ ] `lib/env.ts` — Zod-validated singleton: `API_URL`, `CLERK_SECRET_KEY`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` ([spec](../architecture/05-environment.md)).
+- [ ] `lib/api/api-error.ts` — `ApiError { status, code, message, errors? }`.
+- [ ] `lib/api/http.ts` — server-only `apiFetch<T>` exactly per [data flow](../conventions/01-data-flow.md#the-api-client-libapi-built-in-phase-1): fresh Clerk token, envelope unwrap, 204 handling, `cache: "no-store"`.
+- [ ] `lib/api/handle-auth-error.ts` — central mapping **branched on `ApiError.code`** (never HTTP status): `RESOURCE_NOT_FOUND` → `notFound()`, `UNAUTHENTICATED` → `redirect("/sign-in")`, `ACCOUNT_DISABLED` → disabled-account path (Clerk sign-out + notice), `FORBIDDEN` → access-denied.
+- [ ] Extend `fromErrorToActionState` (`components/shared/form/utils/to-action-state.ts`) with the `ApiError` branch: 422 `errors[]` → `fieldErrors`, `ACCOUNT_DISABLED` → the central disabled-account path, otherwise `message` (the commented-out AxiosError block marks the slot).
+- [ ] `lib/format.ts` — `formatEGP()` (`Intl.NumberFormat`), date helpers, `cldUrl()` transform helper.
 
-### 2. Database & Prisma
+### 2. Providers & auth
 
-- [ ] Create a Supabase project. Note both pooler and direct URLs.
-- [ ] Set `DATABASE_URL` (pooler) and `DIRECT_URL` in `.env.local`.
-- [ ] Add `prisma/schema.prisma` with the full schema from `architecture/05-database-schema.md`.
-- [ ] Run `bunx prisma migrate dev --name init`.
-- [ ] Run `bunx prisma generate`.
-- [ ] In Supabase SQL editor, run: `CREATE SEQUENCE order_human_id_seq START 1;`.
-- [ ] Add `lib/prisma.ts` Prisma singleton.
-- [ ] Seed minimal data: a few categories, subcategories, and ~20 products. Provide a `prisma/seed.ts`.
+- [ ] `app/layout.tsx` — mount `ClerkProvider`, `NuqsAdapter`, next-themes `ThemeProvider`, sonner `<Toaster />`, `<RedirectToast />`; set real metadata (title "SG Couture Admin").
+- [ ] `proxy.ts` — `clerkMiddleware`: everything requires a session except `/sign-in`; ADMIN-only routes (`/`, `/analytics`, `/staff-users`) redirect MANAGERs to `/orders`; `USER` role → access-denied ([matrix](../architecture/04-auth-and-roles.md#route-matrix)).
+- [ ] `app/(auth)/sign-in/` — Clerk sign-in page. No sign-up route.
+- [ ] Clerk dashboard one-time: session token includes `publicMetadata` (role claim).
 
-### 3. Clerk authentication
+### 3. UI primitives & shell
 
-- [ ] Create a Clerk application. Configure email + password and Google OAuth as sign-in methods.
-- [ ] Add `@clerk/nextjs` and configure the provider in `app/layout.tsx`.
-- [ ] Add Clerk env vars from `architecture/09-environment-and-deploy.md`.
-- [ ] Add Clerk hosted sign-in/sign-up pages at `app/(auth)/sign-in/[[...sign-in]]/page.tsx` and `app/(auth)/sign-up/[[...sign-up]]/page.tsx`.
-- [ ] Implement `proxy.ts` (Next.js middleware) per `integrations/01-clerk-auth.md`:
-  - Redirect unauthenticated users from protected routes.
-  - Redirect non-MANAGER/ADMIN users from `/admin/*`.
-  - Redirect non-ADMIN users from `/admin/settings` and `/admin/users`.
-- [ ] Implement Clerk webhook at `app/api/webhooks/clerk/route.ts`:
-  - Verify signature with `svix`.
-  - Handle `user.created`, `user.updated`, `user.deleted`.
-- [ ] Test locally with a tunnel (ngrok or Cloudflare Tunnel).
+- [ ] Install shadcn batch: `input`, `label` (**unblocks the existing `FormControl` imports**), `card`, `table`, `badge`, `select`, `dialog`, `dropdown-menu`, `separator`, `skeleton`, `sheet`, `tabs`, `avatar`, `textarea`, `checkbox`, `switch`, `tooltip` — via `bunx shadcn@latest add …`.
+- [ ] Admin shell: role-filtered sidebar (groups per [screens overview](../screens/00-overview.md#layout-applayouttsx--admin-shell), `sheet` on mobile) + topbar (breadcrumb, theme toggle, Clerk user menu).
+- [ ] Placeholder page for every route in the [route map](../screens/00-overview.md#route-map) (empty feature shells).
+- [ ] Global `error.tsx`, `not-found.tsx`, root `loading.tsx`, shared access-denied screen.
+- [ ] `next.config.ts`: `images.remotePatterns` for `res.cloudinary.com`.
 
-### 4. nuqs setup
+### 4. Smoke test
 
-- [ ] Install `nuqs`.
-- [ ] Wrap the app in `<NuqsAdapter>` in `app/layout.tsx`.
-- [ ] Add `features/products/hooks/useProductParams.ts` per `integrations/05-nuqs-url-state.md`.
-
-### 5. Storefront — read-only catalog
-
-- [ ] Build `app/(storefront)/layout.tsx` with shared nav and footer.
-- [ ] `features/home/` — `HomeFeature` per `storefront/01-home.md`. Featured products, category grid, hero.
-- [ ] `features/products/` — `ProductsFeature` per `storefront/02-product-catalog.md`. Filters, sort, pagination via nuqs. Service `getProducts(params)`.
-- [ ] `features/product-detail/` — `ProductDetailFeature` per `storefront/03-product-detail.md`. Gallery, variants, description, related products. **Skip add-to-cart and reviews for now** — those land in Phase 2 / Phase 5.
-- [ ] `features/category/` — `CategoryFeature` (slim wrapper around `getProducts` with category filter).
-- [ ] `features/search/` — `SearchFeature` using PostgreSQL full-text search.
-
-### 6. API route handlers (mirror every read above)
-
-- [ ] `app/api/products/route.ts` — GET paginated list with filters (calls the same `getProducts` service).
-- [ ] `app/api/products/[slug]/route.ts` — GET single product.
-- [ ] `app/api/categories/route.ts` — GET all categories with subcategories.
-- [ ] All routes use the response envelope from `architecture/06-api-design.md`.
-
-### 7. Vercel deployment
-
-- [ ] Create the Vercel project and link the repo.
-- [ ] Add all env vars to Vercel.
-- [ ] Configure the build command (`bunx prisma generate && next build`).
-- [ ] Set up production Clerk webhook to point at `https://yourdomain.com/api/webhooks/clerk`.
-- [ ] First production deploy.
+- [ ] One Server Component calls `GET /admin/categories` through `apiFetch` and renders names from the envelope's `data`.
 
 ## Acceptance criteria
 
-- [ ] `bun run dev` starts the app cleanly.
-- [ ] `bunx prisma migrate dev` and `bunx prisma generate` both succeed.
-- [ ] `CREATE SEQUENCE order_human_id_seq` ran (verify in SQL editor).
-- [ ] Sign-up creates a row in `users` with role = USER (Clerk webhook verified locally).
-- [ ] Sign-out works.
-- [ ] `/`, `/products`, `/products/[slug]`, `/categories/[slug]`, `/search` all render.
-- [ ] Filters and sort change the URL via nuqs and re-render the server component with new data.
-- [ ] `/admin/*` redirects to `/` for USER role and to `/sign-in` when unauthenticated.
-- [ ] All API routes return the standard envelope and correct status codes.
-- [ ] Production deploy on Vercel works.
-- [ ] Production Clerk webhook fires on real sign-ups.
-
-## What is **not** in this phase
-
-- Cart, checkout, payments → Phase 2.
-- Account area, addresses, wishlist → Phase 3.
-- Admin dashboard → Phase 4.
-- Reviews, analytics, banners → Phase 5.
-- Mobile app → Phase 6.
+- [ ] Sign-in works; signed-out users are redirected to `/sign-in` from any route.
+- [ ] MANAGER: no Dashboard/Analytics/Staff Users in the nav; hitting `/`, `/analytics`, or `/staff-users` redirects to `/orders`; lands on `/orders` after sign-in.
+- [ ] `USER` role sees the access-denied screen everywhere.
+- [ ] The smoke read renders live API data; an invalid token path produces a redirect to `/sign-in`, not a crash.
+- [ ] A test toast renders (Toaster mounted); theme toggle switches light/dark and persists.
+- [ ] `bun lint` and `bun run build` pass.
+- [ ] [Tracker](./README.md) updated.

@@ -16,4 +16,5 @@ Planned success: **202** `{ "queued": true }` — inserts are batched server-sid
 
 ## When it ships
 
-Phase 9 also adds the customer-facing bell endpoints (`GET /notifications`, mark-read). This page will be rewritten with the final contract, and the [README](./README.md) "not available" list updated. Track status in [`../../DEVELOPMENT_PHASES.md`](../../DEVELOPMENT_PHASES.md).
+Phase 9 also adds the customer-facing bell endpoints (`GET /notifications`, mark-read). This page will be rewritten with the final contract, and the [README](./README.md) "not available" list updated. Track status in `DEVELOPMENT_PHASES.md` in the backend repo. <!-- sg-admin-app local patch: link de-referenced (file lives in the backend repo); re-apply after re-sync -->
+

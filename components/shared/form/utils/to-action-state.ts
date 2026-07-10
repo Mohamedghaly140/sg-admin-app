@@ -5,7 +5,7 @@ import { ZodError } from "zod";
 export type ActionState = {
   status?: "SUCCESS" | "ERROR";
   message: string;
-  payload?: Record<string, string>;
+  payload?: Record<string, string | string[]>;
   fieldErrors: Record<string, string[] | undefined>;
   timestamp: number;
   response?: Record<string, string | number | undefined | null>;
@@ -17,8 +17,22 @@ export const EMPTY_ACTION_STATE: ActionState = {
   timestamp: Date.now(),
 };
 
-const toPayload = (formData?: FormData): Record<string, string> | undefined =>
-  formData ? Object.fromEntries(formData) as Record<string, string> : undefined;
+const toPayload = (
+  formData?: FormData,
+): Record<string, string | string[]> | undefined => {
+  if (!formData) return undefined;
+  // Object.fromEntries would collapse repeated keys (multi-selects, tag
+  // inputs like sizes/colors) down to their last value — group them instead.
+  const payload: Record<string, string | string[]> = {};
+  for (const key of new Set(formData.keys())) {
+    const values = formData
+      .getAll(key)
+      .filter((value): value is string => typeof value === "string");
+    if (values.length === 0) continue;
+    payload[key] = values.length === 1 ? values[0] : values;
+  }
+  return payload;
+};
 
 export const fromErrorToActionState = (
   error: unknown,

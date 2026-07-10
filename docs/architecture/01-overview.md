@@ -1,37 +1,50 @@
-# 01 — Project Overview
+# 01 — System Overview
 
-## What we're building
+## Context
 
-A full-stack e-commerce web application built with Next.js 16. It serves two audiences from the same codebase:
+```
+┌──────────────────────────────┐         ┌───────────────────────────────┐
+│  sg-admin-app (this repo)    │  HTTPS  │  SG Couture backend API       │
+│  Next.js 16 admin dashboard  │ ──────► │  https://<api-host>/api/v1    │
+│  server-side fetch + Bearer  │         │  (separate repo & deployment) │
+└──────────────────────────────┘         └───────────────────────────────┘
+        │                                        │
+        │ Clerk session (auth)                   │ owns: DB, validation truth,
+        ▼                                        │ slugs, totals, payments,
+┌──────────────┐    browser-direct upload        │ emails, Cloudinary cleanup
+│    Clerk     │   ┌────────────┐                │
+└──────────────┘   │ Cloudinary │ ◄── signed params issued by the API
+                   └────────────┘
+```
 
-- **Client storefront** — public-facing product catalog, cart, checkout (registered and anonymous), and account management.
-- **Admin dashboard** — internal protected area for managing products, orders, customers, coupons, and analytics.
+This app is a **frontend-only client** of the backend REST API. Every admin capability — products, orders, customers, analytics — is an API call documented in [`../integration/admin/`](../integration/admin/README.md).
 
-The Next.js app **is the entire backend**. There is no separate API service.
+## Responsibility split
 
-- Data mutations happen via **Server Actions**.
-- Initial data loads happen in **Server Components**.
-- A set of **REST API route handlers** is built alongside every web feature to serve a future React Native Expo mobile app.
+| This app owns | The backend owns |
+|---|---|
+| Screens, layout, navigation | All data (database) |
+| Client-side UX validation (Zod, pre-flight) | Validation truth (strict 422s) |
+| URL state (filters, pagination, search) | Server-owned fields: `slug`, `priceAfterDiscount`, `sold`, ratings, order totals, `usedCount` |
+| Clerk session handling + per-request Bearer token | Roles source of truth (mirrored to Clerk `publicMetadata.role`) |
+| Rendering Cloudinary delivery URLs; direct browser upload with signed params | Cloudinary account, signatures, asset deletion/cleanup |
+| Role-aware nav + route gating (UX layer) | **Actual security enforcement** (401/403 per request) |
 
-## Key design goals
+## What this app deliberately does NOT contain
 
-- **No dedicated backend service.** Next.js handles everything via Server Components, Server Actions, and API Route Handlers.
-- **Anonymous (guest) checkout is a first-class feature.** Users can complete a purchase with just an email address — no account required.
-- **API route handlers are built from day one** alongside every web feature, so the mobile app can be added later without any backend changes.
-- **Role-based access control** enforced at the proxy level before any page or handler runs.
-- **URL state** (filters, pagination, sort) lives in the URL via `nuqs` — shareable, bookmarkable, and readable server-side without a client round-trip.
+Do not (re)introduce any of these — they belong to the backend or don't apply:
 
-## Future mobile app
+- **No Prisma, no database, no migrations.** All data access is `apiFetch` against the REST API.
+- **No Stripe/Geidea SDKs.** Payments are CASH-only today; card payments are backend Phase 7 (`verify-payment` 404s — see the [API README](../integration/admin/README.md#what-is-not-available-yet)).
+- **No Resend/email sending.** The backend sends emails (e.g. on password reset).
+- **No Cloudinary server SDK, no asset deletion.** Uploads go browser → Cloudinary with signed params from the API; cleanup is backend-owned.
+- **No webhooks.** Role changes propagate backend → Clerk; this app just reads session claims.
+- **No API route handlers for business logic.** This app exposes no API of its own.
 
-The mobile app will be built as a **separate** React Native Expo project after the web app is complete and stable. It will consume the same API route handlers already built into this Next.js app. **No backend changes required.**
+## Request flows in one paragraph each
 
-Planned mobile stack:
+**Reads** — Server Components call a server-only `apiFetch` helper (fresh Clerk token per request → `Authorization: Bearer`) and render the result. No client-side data fetching for page data.
 
-- React Native + Expo (managed workflow)
-- TypeScript
-- Expo Router
-- `@clerk/expo` (auth)
-- NativeWind (styling)
-- TanStack Query (data fetching/caching)
+**Mutations** — Server Actions validate `FormData` with Zod, call `apiFetch`, and return an `ActionState` consumed by the shared `Form` component (sonner toasts + inline field errors). Then `revalidatePath` refreshes the affected route.
 
-Phase 6 covers the mobile app. See `phases/phase-6-mobile-app.md`.
+Full spec: [`../conventions/01-data-flow.md`](../conventions/01-data-flow.md).
