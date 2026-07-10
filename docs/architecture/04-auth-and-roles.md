@@ -8,6 +8,8 @@ Authentication is **Clerk**; authorization is the **backend's job**. This app ne
 - `proxy.ts` (Next.js 16 middleware) runs `clerkMiddleware`: every route requires a session except `/sign-in` and `/account-disabled`. There is **no other public content** in this app.
 - Sign-in page at `app/(auth)/sign-in/` using Clerk components. No self-serve sign-up — staff accounts are created by an ADMIN via the [staff-users API](../integration/admin/09-staff-users.md).
 - `app/(auth)/account-disabled/` — the central disabled-account path `lib/api/handle-auth-error.ts` and `fromErrorToActionState` redirect to on `ACCOUNT_DISABLED`. A Client Component: calls `useClerk().signOut({ redirectUrl: "/account-disabled" })` once on mount, then shows the notice. Must stay outside the middleware's auth requirement — after `signOut()` completes the visitor is unauthenticated on this same route.
+- `app/access-denied/` — early minimal redirect target for authenticated `USER` role sessions. The user stays signed in, but cannot view admin routes.
+- `proxy.ts` deliberately uses manual pathname checks plus `NextResponse.redirect()`/`.next()` instead of `createRouteMatcher` or `auth.protect()` because the former is deprecated in current Clerk examples and the latter has redirect issues in recent `@clerk/nextjs` 7.x + Next 16 proxy-on-Node-runtime combinations.
 
 ## Token flow
 
