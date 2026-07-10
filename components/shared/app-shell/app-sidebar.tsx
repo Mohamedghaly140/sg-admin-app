@@ -27,7 +27,13 @@ export function AppSidebar({ role }: AppSidebarProps) {
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarGroupContent>
-              <NavMenu items={group.items} />
+              <NavMenu
+                items={group.items.map((item) => ({
+                  label: item.label,
+                  href: item.href,
+                  icon: <item.icon />,
+                }))}
+              />
             </SidebarGroupContent>
           </SidebarGroup>
         ))}

@@ -7,10 +7,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import type { NavItem } from "@/components/shared/app-shell/nav-config";
+
+export type NavMenuItem = {
+  label: string;
+  href: string;
+  icon: React.ReactNode;
+};
 
 type NavMenuProps = {
-  items: NavItem[];
+  items: NavMenuItem[];
 };
 
 export function NavMenu({ items }: NavMenuProps) {
@@ -29,7 +34,7 @@ export function NavMenu({ items }: NavMenuProps) {
               tooltip={item.label}
               render={<Link href={item.href} />}
             >
-              <item.icon />
+              {item.icon}
               <span>{item.label}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
