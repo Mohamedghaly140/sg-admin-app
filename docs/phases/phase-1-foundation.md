@@ -28,11 +28,11 @@ Everything cross-cutting: a signed-in MANAGER/ADMIN sees an empty but fully navi
 
 ### 3. UI primitives & shell
 
-- [ ] Install shadcn batch: `input`, `label` (**unblocks the existing `FormControl` imports**), `card`, `table`, `badge`, `select`, `dialog`, `dropdown-menu`, `separator`, `skeleton`, `sheet`, `tabs`, `avatar`, `textarea`, `checkbox`, `switch`, `tooltip` — via `bunx shadcn@latest add …`.
-- [ ] Admin shell: role-filtered sidebar (groups per [screens overview](../screens/00-overview.md#layout-applayouttsx--admin-shell), `sheet` on mobile) + topbar (breadcrumb, theme toggle, Clerk user menu).
-- [ ] Placeholder page for every route in the [route map](../screens/00-overview.md#route-map) (empty feature shells).
-- [ ] Global `error.tsx`, `not-found.tsx`, root `loading.tsx`, shared access-denied screen.
-- [ ] `next.config.ts`: `images.remotePatterns` for `res.cloudinary.com`.
+- [x] Install shadcn batch: `input`, `label` (**unblocks the existing `FormControl` imports**), `card`, `table`, `badge`, `select`, `dialog`, `dropdown-menu`, `separator`, `skeleton`, `sheet`, `tabs`, `avatar`, `textarea`, `checkbox`, `switch`, `tooltip` — via `bunx shadcn@latest add …`. (Also added `sidebar` and `breadcrumb`, required by the shell below but not in the original literal list.)
+- [x] Admin shell: role-filtered sidebar (groups per [screens overview](../screens/00-overview.md#layout-applayouttsx--admin-shell), `sheet` on mobile) + topbar (breadcrumb, theme toggle, Clerk user menu).
+- [x] Placeholder page for every route in the [route map](../screens/00-overview.md#route-map) (empty feature shells).
+- [x] Global `error.tsx`, `not-found.tsx`, root `loading.tsx`, shared access-denied screen.
+- [x] `next.config.ts`: `images.remotePatterns` for `res.cloudinary.com`.
 
 ### 4. Smoke test
 

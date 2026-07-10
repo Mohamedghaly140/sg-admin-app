@@ -20,9 +20,7 @@ export function handleAuthError(error: unknown): never {
     case "ACCOUNT_DISABLED":
       redirect("/account-disabled");
     case "FORBIDDEN":
-      // TODO(phase-1 task 3): route to the shared access-denied screen once
-      // it exists — for now this falls through to the segment's error.tsx.
-      throw error;
+      redirect("/access-denied");
     default:
       throw error;
   }

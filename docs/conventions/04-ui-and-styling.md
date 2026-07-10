@@ -6,7 +6,7 @@
 
 - Install on demand: `bunx shadcn@latest add <item>` (never npm/npx).
 - `components/ui/` holds shadcn primitives **only** — no business logic, no app-specific components.
-- Currently installed: `button`, `alert-dialog`. Everything else (input, label, card, table, badge, select, dialog, dropdown-menu, skeleton, sheet, tabs, …) is installed as needed — the phase-1 batch covers the common set.
+- Currently installed (phase 1): `button`, `alert-dialog`, `input`, `label`, `card`, `table`, `badge`, `select`, `dialog`, `dropdown-menu`, `separator`, `skeleton`, `sheet`, `tabs`, `avatar`, `textarea`, `checkbox`, `switch`, `tooltip`, `sidebar`, `breadcrumb`. Install anything else as needed.
 
 ## Prefer the shared components
 

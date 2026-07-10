@@ -35,6 +35,7 @@ docs/                     # this documentation
 | Component | Purpose |
 |---|---|
 | `form/` | The form system: `Form` (wires `ActionState` → sonner toasts), `FieldError`, `useActionFeedback`, `toActionState` / `fromErrorToActionState` utils. See [conventions/02-forms.md](../conventions/02-forms.md) |
+| `app-shell/` | `AppSidebar`, `NavMenu`, `Topbar`, `ThemeToggle`, `Breadcrumbs`, `nav-config.ts` — the role-filtered admin shell mounted by `app/(admin)/layout.tsx` |
 | `form-control/` | `FormControl` — Label + Input + FieldError in one |
 | `submit-button/` | `SubmitButton` — `useFormStatus` pending spinner |
 | `confirm-dialog/` | `ConfirmDialog` — AlertDialog wrapper for destructive actions |
@@ -54,4 +55,4 @@ Prefer these over reinventing. New cross-feature components go here; feature-spe
 
 ## Current state (don't overstate)
 
-Check [`../phases/README.md`](../phases/README.md) before assuming anything exists. As of the docs restructure: `features/`, `lib/env.ts`, `lib/api/`, `lib/format.ts`, `proxy.ts`, and all admin routes are **not built yet** (phase 1+). What exists: the `components/shared/` inventory above, `components/ui/button.tsx` + `alert-dialog.tsx`, `lib/utils.ts`, `actions/cookies.actions.ts`, and a default starter `app/` with **no providers mounted**.
+Check [`../phases/README.md`](../phases/README.md) before assuming anything exists. As of phase 1 tasks 1–3: `lib/env.ts`, `lib/api/`, `proxy.ts`, providers (`app/layout.tsx`), the full shadcn primitive batch, the admin shell (`app/(admin)/layout.tsx` + `components/shared/app-shell/`), and placeholder pages for every route in the map all exist. **Still not built**: `features/` (any feature), `lib/format.ts`, and the phase-1 task 4 smoke test.
