@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modern Tailwind"
+  short_description: "Use scalable Tailwind patterns"
+  default_prompt: "Use $modern-tailwind to keep Tailwind class usage readable and maintainable."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Accessible HTML JSX"
+  short_description: "Write semantic accessible markup"
+  default_prompt: "Use $modern-accessible-html-jsx to write semantic, keyboard-accessible HTML and JSX."

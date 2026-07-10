@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modern Next.js"
+  short_description: "Use current Next.js patterns"
+  default_prompt: "Use $modern-best-practice-nextjs to follow current App Router and Server Component patterns."

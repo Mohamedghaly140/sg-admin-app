@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modern Browser APIs"
+  short_description: "Prefer native browser APIs"
+  default_prompt: "Use $use-modern-browser-apis to replace custom JavaScript with native browser APIs where appropriate."

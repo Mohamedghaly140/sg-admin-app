@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bun First"
+  short_description: "Prefer Bun runtime and tooling"
+  default_prompt: "Use $bun-first to keep JavaScript tooling and runtime choices Bun-first."

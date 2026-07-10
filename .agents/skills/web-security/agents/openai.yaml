@@ -1,0 +1,4 @@
+interface:
+  display_name: "Web Security"
+  short_description: "Avoid common web vulnerabilities"
+  default_prompt: "Use $web-security to check web code for unsafe input handling, auth, and exposure risks."

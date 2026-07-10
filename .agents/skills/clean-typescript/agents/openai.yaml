@@ -1,0 +1,4 @@
+interface:
+  display_name: "Clean TypeScript"
+  short_description: "Write maintainable TypeScript"
+  default_prompt: "Use $clean-typescript to keep TypeScript simple, safe, and maintainable."

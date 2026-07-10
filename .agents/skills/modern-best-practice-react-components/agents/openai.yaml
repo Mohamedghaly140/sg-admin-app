@@ -1,0 +1,4 @@
+interface:
+  display_name: "Modern React Components"
+  short_description: "Build clean React components"
+  default_prompt: "Use $modern-best-practice-react-components to build React components without unnecessary state or effects."
