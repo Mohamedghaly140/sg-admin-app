@@ -1,6 +1,7 @@
-// import { AxiosError } from "axios";
 import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
+import { redirect } from "next/navigation";
 import { ZodError } from "zod";
+import { ApiError } from "@/lib/api/api-error";
 
 export type ActionState = {
   status?: "SUCCESS" | "ERROR";
@@ -60,16 +61,53 @@ export const fromErrorToActionState = (
       response,
     };
   }
-  // if (error instanceof AxiosError) {
-  //   return {
-  //     status: "ERROR",
-  //     message: error.response?.data.message,
-  //     fieldErrors: {},
-  //     payload: toPayload(formData),
-  //     timestamp: Date.now(),
-  //     response,
-  //   };
-  // }
+  if (error instanceof ApiError) {
+    // Branch on `code`, never on `status` or `message` — two distinct 403s exist.
+    if (error.code === "UNAUTHENTICATED") {
+      redirect("/sign-in");
+    }
+    if (error.code === "ACCOUNT_DISABLED") {
+      redirect("/account-disabled");
+    }
+
+    const apiResponse = { code: error.code, status: error.status, ...response };
+
+    if (error.code === "VALIDATION_ERROR" && error.errors) {
+      const fieldErrors: Record<string, string[]> = {};
+      for (const { field, message } of error.errors) {
+        (fieldErrors[field] ??= []).push(message);
+      }
+      return {
+        status: "ERROR",
+        message: error.message,
+        fieldErrors,
+        payload: toPayload(formData),
+        timestamp: Date.now(),
+        response: apiResponse,
+      };
+    }
+
+    if (error.code === "FORBIDDEN") {
+      return {
+        status: "ERROR",
+        message: "You don't have permission to do this.",
+        fieldErrors: {},
+        payload: toPayload(formData),
+        timestamp: Date.now(),
+        response: apiResponse,
+      };
+    }
+
+    // 409 family and everything else: the API's message is human-readable.
+    return {
+      status: "ERROR",
+      message: error.message,
+      fieldErrors: {},
+      payload: toPayload(formData),
+      timestamp: Date.now(),
+      response: apiResponse,
+    };
+  }
   if (error instanceof Error) {
     return {
       status: "ERROR",

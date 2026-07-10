@@ -5,8 +5,9 @@ Authentication is **Clerk**; authorization is the **backend's job**. This app ne
 ## Clerk wiring (frontend-only)
 
 - `ClerkProvider` wraps the app in `app/layout.tsx`.
-- `proxy.ts` (Next.js 16 middleware) runs `clerkMiddleware`: every route requires a session except `/sign-in`. There is **no public content** in this app.
+- `proxy.ts` (Next.js 16 middleware) runs `clerkMiddleware`: every route requires a session except `/sign-in` and `/account-disabled`. There is **no other public content** in this app.
 - Sign-in page at `app/(auth)/sign-in/` using Clerk components. No self-serve sign-up — staff accounts are created by an ADMIN via the [staff-users API](../integration/admin/09-staff-users.md).
+- `app/(auth)/account-disabled/` — the central disabled-account path `lib/api/handle-auth-error.ts` and `fromErrorToActionState` redirect to on `ACCOUNT_DISABLED`. A Client Component: calls `useClerk().signOut({ redirectUrl: "/account-disabled" })` once on mount, then shows the notice. Must stay outside the middleware's auth requirement — after `signOut()` completes the visitor is unauthenticated on this same route.
 
 ## Token flow
 

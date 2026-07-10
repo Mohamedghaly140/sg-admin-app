@@ -16,6 +16,7 @@ Per-screen UX specs for the admin dashboard. **Numbering mirrors [`../integratio
 | `/customers`, `/customers/[id]` | `CustomersFeature`, `CustomerDetailFeature` | [08-customers.md](./08-customers.md) | [§08](../integration/admin/08-customers.md) | MANAGER+ |
 | `/staff-users` | `StaffUsersFeature` | [09-staff-users.md](./09-staff-users.md) | [§09](../integration/admin/09-staff-users.md) | **ADMIN** |
 | `/sign-in` | Clerk sign-in | — | — | public |
+| `/account-disabled` | disabled-account notice (Clerk sign-out on mount) | — | — | public |
 
 - The dashboard home **is the app root `/`** and is ADMIN-only. **MANAGERs land on `/orders`** (middleware redirect — see [auth & roles](../architecture/04-auth-and-roles.md)).
 - `USER` role → access-denied screen everywhere.
