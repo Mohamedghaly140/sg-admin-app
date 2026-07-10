@@ -1,0 +1,13 @@
+---
+description: Clerk auth, JWT token flow, and role-based access
+globs: app/**,lib/**,proxy.ts
+alwaysApply: false
+---
+
+# Auth and Roles
+
+- Clerk session JWT = the API Bearer token, fetched fresh per request via `auth()` → `getToken()`, server-side only.
+- Roles `USER | MANAGER | ADMIN` in Clerk `publicMetadata.role`.
+- **ADMIN-only**: `/` (dashboard), `/analytics`, `/staff-users` — everything else MANAGER+.
+- MANAGERs land on `/orders`. `USER` has no access.
+- Backend 401/403 is the real gate; `proxy.ts` middleware and role-filtered nav are UX only.

@@ -1,0 +1,11 @@
+---
+description: Naming conventions for components, icons, and files
+globs: **/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Naming and Style
+
+- Component props types prefixed with the component name: `OrdersTableProps`, never `Props`.
+- Lucide icons with the `Lucide` prefix: `LucideSearch`, never `Search`.
+- Files kebab-case; feature default export `<Name>Feature`; API response types hand-written from the contract docs.

@@ -1,0 +1,12 @@
+---
+description: UI primitives, Tailwind v4, tables, and charts
+globs: **/*.tsx,app/globals.css,components/**
+alwaysApply: false
+---
+
+# UI and Styling
+
+- shadcn style **base-nova on `@base-ui/react` — NOT Radix**: check the generated file's anatomy, don't assume Radix docs.
+- Tailwind v4 CSS-first: theme in `app/globals.css` (`@theme`); **no `tailwind.config.*`**.
+- Tables: server-rendered shadcn `table` + nuqs — no TanStack, no bulk actions (the API has none). Destructive actions behind `ConfirmDialog`.
+- Charts (recharts): colors from `--chart-*` CSS vars; only on dashboard/analytics.

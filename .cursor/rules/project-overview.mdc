@@ -1,0 +1,18 @@
+---
+description: SG Couture admin project identity and engineering approach
+alwaysApply: true
+---
+
+# Project Overview
+
+This repo is the **SG Couture admin dashboard** — a standalone Next.js 16 frontend that consumes a separate backend REST API. It has **no database and no backend of its own**: no Prisma, no Stripe/Resend, no Cloudinary server SDK.
+
+The API contract lives in `docs/integration/admin/` (vendored from the backend repo, read-only) — **never invent endpoints or fields not documented there**. Start at `docs/README.md` for the doc map.
+
+Keep replies concise. No unnecessary fluff or long code snippets.
+
+## Engineering Approach
+
+- Act as a **senior Next.js developer**. Apply Next.js-first patterns — App Router, Server Components, Server Actions, route handlers, middleware (`proxy.ts`), layouts/route segments, `revalidatePath`, `server-only` — never fall back to generic React/Express patterns (client-side fetching, `useEffect` data loading, client state for server data).
+- When stuck or unsure about a third-party library, pull fresh official docs — use **`docs-explorer`**.
+- Before any architecture decision, convention deviation, or refactor touching 3+ files, consult **`fable-advisor`** — treat a `Flag` as blocking until resolved.

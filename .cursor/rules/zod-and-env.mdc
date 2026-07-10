@@ -1,0 +1,15 @@
+---
+description: Zod v4 patterns and environment variable access
+globs: features/**/schema/**,lib/env.ts
+alwaysApply: false
+---
+
+# Zod v4
+
+- `z.enum()` accepts enum-like objects; `z.nativeEnum()` is deprecated. `.enum` accessor (singular).
+- `error.flatten()` is deprecated (existing code still uses it) — prefer `z.flattenError(error)` in new code.
+- Top-level formats: `z.url()`, `z.email()` — not `z.string().url()`.
+
+# Environment
+
+Three vars only: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `CLERK_SECRET_KEY`, `API_URL` (server-only, no `NEXT_PUBLIC_`). Access via the validated `lib/env.ts` singleton, never `process.env` directly. See `docs/architecture/05-environment.md`.

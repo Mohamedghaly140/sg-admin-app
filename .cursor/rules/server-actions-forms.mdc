@@ -1,0 +1,23 @@
+---
+description: Server Action and form patterns
+globs: features/**/actions/**,actions/**,components/shared/form/**
+alwaysApply: false
+---
+
+# Server Actions and Forms
+
+```ts
+export async function myAction(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  try {
+    const input = mySchema.parse(Object.fromEntries(formData)); // schema = whitelist (API rejects unknown fields)
+    // multi-value fields (sizes, colors, subCategoryIds): use formData.getAll(...) — fromEntries collapses them
+    await apiFetch("/admin/…", { method: "POST", body: input });
+    revalidatePath("/…");
+    return toActionState("SUCCESS", "Done");
+  } catch (e) {
+    return fromErrorToActionState(e, formData); // Zod + ApiError(422→fieldErrors) + Clerk errors
+  }
+}
+```
+
+Forms: caller wires `useActionState`, renders the shared `Form` + `FormControl` + `SubmitButton`; `Form` auto-toasts via sonner. Redirect flows: `setCookieByKey("toast", …)` + `redirect()` (RedirectToast shows it). Details: `docs/conventions/02-forms.md`.

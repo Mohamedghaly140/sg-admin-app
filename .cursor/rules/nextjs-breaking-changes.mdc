@@ -1,0 +1,10 @@
+---
+description: Next.js 16 breaking changes — read local docs before coding
+alwaysApply: true
+---
+
+# This Is NOT the Next.js You Know
+
+This version has breaking changes: APIs, conventions, and file structure may all differ from training data.
+
+Before writing any Next.js code, read the relevant guide in `node_modules/next/dist/docs/`. Heed deprecation notices.

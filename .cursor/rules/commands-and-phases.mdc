@@ -1,0 +1,19 @@
+---
+description: Bun commands and implementation phase discipline
+alwaysApply: true
+---
+
+# Commands and Phases
+
+Always use **Bun** — never `npm`, `npx`, or `yarn`.
+
+```bash
+bun dev                        # start dev server
+bun run build                  # production build
+bun lint                       # ESLint
+bunx shadcn@latest add <item>  # install a shadcn primitive
+```
+
+## Implementation Status
+
+**Check `docs/phases/README.md` before assuming anything exists.** Providers, `lib/api/`, `lib/env.ts`, `proxy.ts`, `features/`, and most UI primitives are phase tasks, not givens.
