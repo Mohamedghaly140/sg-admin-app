@@ -5,8 +5,8 @@ Authentication is **Clerk**; authorization is the **backend's job**. This app ne
 ## Clerk wiring (frontend-only)
 
 - `ClerkProvider` wraps the app in `app/layout.tsx`.
-- `proxy.ts` (Next.js 16 middleware) runs `clerkMiddleware`: every route requires a session except `/sign-in` and `/account-disabled`. There is **no other public content** in this app.
-- Sign-in page at `app/(auth)/sign-in/` using Clerk components. No self-serve sign-up — staff accounts are created by an ADMIN via the [staff-users API](../integration/admin/09-staff-users.md).
+- `proxy.ts` (Next.js 16 middleware) runs `clerkMiddleware`: every route requires a session except `/sign-in` and `/account-disabled`. The only other public route is `/sign-up`, and only when `NODE_ENV=development`.
+- Sign-in page at `app/(auth)/sign-in/` using Clerk components. No production self-serve sign-up — staff accounts are created by an ADMIN via the [staff-users API](../integration/admin/09-staff-users.md). A dev-only `/sign-up` route exists for local Clerk account creation, but it is Clerk-only: it does not create the backend DB row that the real staff-users flow creates, so even after manually setting `publicMetadata.role` in Clerk, backend API calls may still return 401/403 for that test account. Use it for middleware, role-routing, and UI checks, not for a fully API-backed staff session. Production safety also depends on the production Clerk instance itself: deployed environments use production Clerk keys, and the app hides this UI outside development, but sign-up must still be disabled in the production Clerk dashboard under Restrictions -> sign-up.
 - `app/(auth)/account-disabled/` — the central disabled-account path `lib/api/handle-auth-error.ts` and `fromErrorToActionState` redirect to on `ACCOUNT_DISABLED`. A Client Component: calls `useClerk().signOut({ redirectUrl: "/account-disabled" })` once on mount, then shows the notice. Must stay outside the middleware's auth requirement — after `signOut()` completes the visitor is unauthenticated on this same route.
 - `app/access-denied/` — early minimal redirect target for authenticated `USER` role sessions. The user stays signed in, but cannot view admin routes.
 - `proxy.ts` deliberately uses manual pathname checks plus `NextResponse.redirect()`/`.next()` instead of `createRouteMatcher` or `auth.protect()` because the former is deprecated in current Clerk examples and the latter has redirect issues in recent `@clerk/nextjs` 7.x + Next 16 proxy-on-Node-runtime combinations.
@@ -35,10 +35,10 @@ Rules:
 
 ```ts
 const { sessionClaims } = await auth();
-const role = sessionClaims?.publicMetadata?.role; // requires the JWT claim (below)
+const role = sessionClaims?.metadata?.role; // requires the JWT claim (below)
 ```
 
-> **Clerk setup (one-time, dashboard):** customize the session token to include `publicMetadata` so `sessionClaims.publicMetadata.role` is available without an extra API call: Sessions → Customize session token → `{ "publicMetadata": "{{user.public_metadata}}" }`.
+> **Clerk setup (one-time, dashboard):** customize the session token to include the user's public metadata under the claim key `metadata` — Sessions → Customize session token → `{ "metadata": "{{user.public_metadata}}" }`. The claim key is `metadata` (not `publicMetadata`); it must match the accessor above exactly, or `sessionClaims` silently comes back without a `role` and every request falls through the "no role" branch.
 
 ### Route matrix
 

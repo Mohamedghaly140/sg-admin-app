@@ -11,8 +11,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const { sessionClaims } = await auth();
-  const role = (sessionClaims?.publicMetadata as { role?: Role } | undefined)
-    ?.role;
+  const role = (sessionClaims?.metadata as { role?: Role } | undefined)?.role;
 
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value !== "false";

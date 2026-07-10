@@ -1,12 +1,16 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const PUBLIC_ROUTES = ["/sign-in", "/account-disabled"];
+const PUBLIC_ROUTES = [
+  "/sign-in",
+  "/account-disabled",
+  ...(process.env.NODE_ENV === "development" ? ["/sign-up"] : []),
+];
 const ADMIN_ONLY_ROUTES = ["/", "/analytics", "/staff-users"];
 
 type Role = "USER" | "MANAGER" | "ADMIN";
 type SessionClaimsWithRole = {
-  publicMetadata?: {
+  metadata?: {
     role?: Role;
   };
 };
@@ -29,7 +33,7 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   const role = (sessionClaims as SessionClaimsWithRole | null | undefined)
-    ?.publicMetadata?.role;
+    ?.metadata?.role;
 
   // Anything that isn't staff (MANAGER/ADMIN) — including USER, undefined,
   // or a malformed value — gets the access-denied screen everywhere.

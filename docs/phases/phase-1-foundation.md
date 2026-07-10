@@ -23,7 +23,7 @@ Everything cross-cutting: a signed-in MANAGER/ADMIN sees an empty but fully navi
 
 - [x] `app/layout.tsx` — mount `ClerkProvider`, `NuqsAdapter`, next-themes `ThemeProvider`, sonner `<Toaster />`, `<RedirectToast />`; set real metadata (title "SG Couture Admin").
 - [x] `proxy.ts` — `clerkMiddleware`: everything requires a session except `/sign-in` **and `/account-disabled`** (already shipped in task 1 — exempt it too, or a just-signed-out user loops back to `/sign-in` before the notice renders); ADMIN-only routes (`/`, `/analytics`, `/staff-users`) redirect MANAGERs to `/orders`; `USER` role → access-denied ([matrix](../architecture/04-auth-and-roles.md#route-matrix)).
-- [x] `app/(auth)/sign-in/` — Clerk sign-in page. No sign-up route.
+- [x] `app/(auth)/sign-in/` — Clerk sign-in page. No production sign-up route; `/sign-up` exists only in development for local Clerk account creation.
 - [x] Clerk dashboard one-time: session token includes `publicMetadata` (role claim). Must happen before task 2's auth acceptance criteria can pass.
 
 ### 3. UI primitives & shell

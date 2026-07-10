@@ -32,7 +32,7 @@ export const env = envSchema.parse({
 });
 ```
 
-(Clerk's own SDK reads its two variables from `process.env` directly — that's fine; the schema exists so a missing key fails fast and loudly.)
+(Clerk's own SDK reads its two variables from `process.env` directly — that's fine; the schema exists so a missing key fails fast and loudly. The other explicit exception is `NODE_ENV`, used only to keep the dev-only `/sign-up` route inert outside development in `proxy.ts` and the sign-up page.)
 
 ## Local setup
 
