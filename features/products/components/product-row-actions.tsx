@@ -76,8 +76,8 @@ export function ProductRowActions({ product }: ProductRowActionsProps) {
               Set status
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <DropdownMenuLabel>Status</DropdownMenuLabel>
               <DropdownMenuGroup>
+                <DropdownMenuLabel>Status</DropdownMenuLabel>
                 <SetProductStatusMenuItems
                   productId={product.id}
                   currentStatus={product.status}

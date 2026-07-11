@@ -32,14 +32,14 @@ Phase 2 (`ImageUploader`, categories exist for the form selects).
 
 ### 3. Gallery (edit page)
 
-- [ ] `add-product-image` (via `ImageUploader`), `reorder-product-images` (exact permutation of **row IDs**), `delete-product-image` (row ID, not Cloudinary ID; 204).
+- [x] `add-product-image` (via `ImageUploader`), `reorder-product-images` (exact permutation of **row IDs**), `delete-product-image` (row ID, not Cloudinary ID; 204).
 
 ## Acceptance criteria
 
-- [ ] Create → edit → duplicate → archive → delete round-trip works against the live API.
-- [ ] Delete on a referenced product toasts "archived instead" (flags-based), not a failure.
-- [ ] All filters + pagination are URL-shareable; filter changes reset the page.
-- [ ] Money inputs submit as valid ≤ 2-decimal values; no float math anywhere.
-- [ ] Gallery add/reorder/remove persists across reloads; reorder sends a full permutation.
-- [ ] Mismatched sub-category shows a field error, not a generic toast.
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] Create → edit → duplicate → archive → delete round-trip works against the live API.
+- [x] Delete on a referenced product toasts "archived instead" (flags-based), not a failure.
+- [x] All filters + pagination are URL-shareable; filter changes reset the page.
+- [x] Money inputs submit as valid ≤ 2-decimal values; no float math anywhere.
+- [x] Gallery add/reorder/remove persists across reloads; reorder sends a full permutation.
+- [x] Mismatched sub-category shows a field error, not a generic toast.
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.

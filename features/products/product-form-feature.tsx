@@ -1,5 +1,6 @@
 import { handleAuthError } from "@/lib/api/handle-auth-error";
 
+import { ProductGallery } from "./components/product-gallery";
 import { ProductForm } from "./components/product-form";
 import { getProduct } from "./queries/get-product";
 import { getProductForm } from "./queries/get-product-form";
@@ -58,6 +59,10 @@ export default async function ProductFormFeature({
             : undefined
         }
       />
+
+      {product ? (
+        <ProductGallery productId={product.id} images={product.images} />
+      ) : null}
     </section>
   );
 }
