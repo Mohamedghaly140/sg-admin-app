@@ -62,6 +62,9 @@ export function useImageUpload({
     createInitialState(defaultImageId, defaultImageUrl),
   );
   const pendingFileRef = useRef<File | null>(null);
+  const inFlightUploadRef = useRef<Promise<UploadPendingFileResult> | null>(
+    null,
+  );
   const xhrRef = useRef<XMLHttpRequest | null>(null);
   const activeBlobUrlRef = useRef<string | null>(null);
   const uploadIdRef = useRef(0);
@@ -71,8 +74,6 @@ export function useImageUpload({
   const selectFile = useCallback((file: File) => {
     const validationMessage = validateImageFile(file);
     if (validationMessage) {
-      pendingFileRef.current = null;
-      setHasPendingFile(false);
       dispatch({ type: "ERROR", message: validationMessage });
       return;
     }
@@ -92,67 +93,79 @@ export function useImageUpload({
     dispatch({ type: "FILE_SELECTED", previewUrl });
   }, []);
 
-  const uploadPendingFile = useCallback(async (): Promise<UploadPendingFileResult> => {
+  const uploadPendingFile = useCallback((): Promise<UploadPendingFileResult> => {
+    if (inFlightUploadRef.current) {
+      return inFlightUploadRef.current;
+    }
+
     const pendingFile = pendingFileRef.current;
     if (!pendingFile) {
       const image =
         state.imageId && state.imageUrl
           ? { imageId: state.imageId, imageUrl: state.imageUrl }
           : null;
-      return { ok: true, image };
+      return Promise.resolve({ ok: true, image });
     }
 
-    const uploadId = uploadIdRef.current + 1;
-    uploadIdRef.current = uploadId;
-    dispatch({ type: "UPLOAD_START" });
+    const uploadPromise: Promise<UploadPendingFileResult> = (async () => {
+      try {
+        const uploadId = uploadIdRef.current + 1;
+        uploadIdRef.current = uploadId;
+        dispatch({ type: "UPLOAD_START" });
 
-    const signatureResult = await getUploadSignature({ folder });
-    if (uploadIdRef.current !== uploadId) {
-      return { ok: false };
-    }
-    if (!signatureResult.ok) {
-      dispatch({ type: "ERROR", message: signatureResult.message });
-      return { ok: false };
-    }
+        const signatureResult = await getUploadSignature({ folder });
+        if (uploadIdRef.current !== uploadId) {
+          return { ok: false };
+        }
+        if (!signatureResult.ok) {
+          dispatch({ type: "ERROR", message: signatureResult.message });
+          return { ok: false };
+        }
 
-    try {
-      const uploadedImage = await uploadToCloudinary(
-        pendingFile,
-        signatureResult.data,
-        (progress) => dispatch({ type: "PROGRESS", progress }),
-        (xhr) => {
-          xhrRef.current = xhr;
-        },
-      );
+        try {
+          const uploadedImage = await uploadToCloudinary(
+            pendingFile,
+            signatureResult.data,
+            (progress) => dispatch({ type: "PROGRESS", progress }),
+            (xhr) => {
+              xhrRef.current = xhr;
+            },
+          );
 
-      if (uploadIdRef.current !== uploadId) {
-        return { ok: false };
+          if (uploadIdRef.current !== uploadId) {
+            return { ok: false };
+          }
+          revokeBlobUrl(activeBlobUrlRef.current);
+          activeBlobUrlRef.current = null;
+          xhrRef.current = null;
+          pendingFileRef.current = null;
+          setHasPendingFile(false);
+          dispatch({ type: "SUCCESS", image: uploadedImage });
+          return { ok: true, image: uploadedImage };
+        } catch (error) {
+          if (silentAbortUploadIdsRef.current.has(uploadId)) {
+            silentAbortUploadIdsRef.current.delete(uploadId);
+            return { ok: false };
+          }
+          if (uploadIdRef.current !== uploadId) {
+            return { ok: false };
+          }
+          xhrRef.current = null;
+          dispatch({
+            type: "ERROR",
+            message:
+              error instanceof Error
+                ? error.message
+                : "Upload failed. Please try again.",
+          });
+          return { ok: false };
+        }
+      } finally {
+        inFlightUploadRef.current = null;
       }
-      revokeBlobUrl(activeBlobUrlRef.current);
-      activeBlobUrlRef.current = null;
-      xhrRef.current = null;
-      pendingFileRef.current = null;
-      setHasPendingFile(false);
-      dispatch({ type: "SUCCESS", image: uploadedImage });
-      return { ok: true, image: uploadedImage };
-    } catch (error) {
-      if (silentAbortUploadIdsRef.current.has(uploadId)) {
-        silentAbortUploadIdsRef.current.delete(uploadId);
-        return { ok: false };
-      }
-      if (uploadIdRef.current !== uploadId) {
-        return { ok: false };
-      }
-      xhrRef.current = null;
-      dispatch({
-        type: "ERROR",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Upload failed. Please try again.",
-      });
-      return { ok: false };
-    }
+    })();
+    inFlightUploadRef.current = uploadPromise;
+    return uploadPromise;
   }, [folder, state.imageId, state.imageUrl]);
 
   const retry = useCallback(
