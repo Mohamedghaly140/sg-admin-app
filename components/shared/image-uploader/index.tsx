@@ -21,6 +21,7 @@ export default function ImageUploader({
   defaultImageUrl,
   label = "Image",
   disabled = false,
+  allowRemove = true,
   onUploadingChange,
 }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -101,7 +102,7 @@ export default function ImageUploader({
             </div>
           )}
 
-          {state.previewUrl ? (
+          {state.previewUrl && allowRemove ? (
             <Button
               type="button"
               variant="outline"

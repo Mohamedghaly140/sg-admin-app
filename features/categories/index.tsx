@@ -1,11 +1,14 @@
-import { LucideFolderOpen } from "lucide-react";
+import { LucideFolderOpen, LucidePlus } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { Button } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
 
 import { CategoriesPagination } from "./components/categories-pagination";
 import { CategoriesSearch } from "./components/categories-search";
 import { CategoriesTable } from "./components/categories-table";
+import { CategoryFormDialog } from "./components/category-form-dialog";
+import { getAllCategories } from "./queries/get-all-categories";
 import { getCategories } from "./queries/get-categories";
 import type { CategoriesParams } from "./hooks/use-categories-params";
 
@@ -16,18 +19,31 @@ type CategoriesFeatureProps = {
 export default async function CategoriesFeature({
   searchParams,
 }: CategoriesFeatureProps) {
-  let response: Awaited<ReturnType<typeof getCategories>>;
+  let response: [
+    Awaited<ReturnType<typeof getCategories>>,
+    Awaited<ReturnType<typeof getAllCategories>>,
+  ];
 
   try {
-    response = await getCategories(searchParams);
+    response = await Promise.all([
+      getCategories(searchParams),
+      getAllCategories(),
+    ]);
   } catch (error) {
     handleAuthError(error);
   }
 
-  const { data: categories, meta } = response;
+  const [{ data: categories, meta }, categoryOptions] = response;
+
+  const newCategoryTrigger = (
+    <Button type="button">
+      <LucidePlus data-icon="inline-start" aria-hidden="true" />
+      New category
+    </Button>
+  );
 
   return (
-    <section className="space-y-4">
+    <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-base font-medium">Categories</h1>
@@ -35,12 +51,18 @@ export default async function CategoriesFeature({
             Browse category images and nested sub-categories.
           </p>
         </div>
-        <CategoriesSearch />
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <CategoriesSearch />
+          <CategoryFormDialog trigger={newCategoryTrigger} />
+        </div>
       </div>
 
       {categories.length > 0 ? (
         <>
-          <CategoriesTable categories={categories} />
+          <CategoriesTable
+            categories={categories}
+            categoryOptions={categoryOptions}
+          />
           <CategoriesPagination meta={meta} params={searchParams} />
         </>
       ) : (
@@ -57,6 +79,7 @@ export default async function CategoriesFeature({
                 ? "Try a different name or slug."
                 : "Categories will appear here after they are created."
             }
+            action={<CategoryFormDialog trigger={newCategoryTrigger} />}
           />
         </div>
       )}

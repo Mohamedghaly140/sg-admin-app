@@ -95,7 +95,16 @@ Rules:
 2. **Always pass `formData` to `fromErrorToActionState`** so `ActionState.payload` repopulates the form inputs.
 3. **Success, same page:** `revalidatePath(...)` + `return toActionState("SUCCESS", "...")` — the `Form` toasts the message.
 4. **Success, then navigate** (e.g. create → detail): `revalidatePath(...)` + `await setCookieByKey("toast", "...")` (from `actions/cookies.actions.ts`) + `redirect(...)` — `RedirectToast` shows the message after navigation. (`redirect()` throws; call it outside the `try` or rethrow it.)
-5. **Row deletions** that unmount the submitting UI: pass `suppressBuiltInToasts` to `Form` and toast from a client wrapper, per the `Form` prop docs.
+5. **Row deletions** triggered by a confirmation dialog use the direct-action pattern below instead of `Form`.
+
+### ConfirmDialog row deletions
+
+`ConfirmDialog.onConfirm` is not a form submit, so row deletion controls call
+their delete Server Action directly inside `useTransition`. The client wrapper
+shows exactly one toast based on `actionState.status` (`SUCCESS` or `ERROR`),
+never by matching message text. Do not wrap the action call in a client-side
+`try/catch`: `fromErrorToActionState` intentionally throws redirects for
+`UNAUTHENTICATED` and `ACCOUNT_DISABLED`, and those redirects must propagate.
 
 ## Error mapping — the `ApiError` branch in `fromErrorToActionState`
 

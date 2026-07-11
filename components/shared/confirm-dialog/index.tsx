@@ -17,6 +17,7 @@ type ConfirmDialogProps = {
   title?: string;
   description?: string;
   confirmLabel?: string;
+  pending?: boolean;
   onConfirm: () => void;
 };
 
@@ -25,6 +26,7 @@ export function ConfirmDialog({
   title = "Are you sure?",
   description = "This action cannot be undone.",
   confirmLabel = "Confirm",
+  pending = false,
   onConfirm,
 }: ConfirmDialogProps) {
   return (
@@ -37,7 +39,11 @@ export function ConfirmDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" onClick={onConfirm}>
+          <AlertDialogAction
+            variant="destructive"
+            disabled={pending}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>

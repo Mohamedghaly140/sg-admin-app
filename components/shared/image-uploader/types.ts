@@ -22,6 +22,7 @@ export type ImageUploaderProps = {
   defaultImageUrl?: string | null;
   label?: string;
   disabled?: boolean;
+  allowRemove?: boolean;
   onUploadingChange?: (uploading: boolean) => void;
 };
 

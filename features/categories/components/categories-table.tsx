@@ -9,13 +9,20 @@ import {
 import { formatDate } from "@/lib/format";
 
 import { CategoryThumbnail } from "./category-thumbnail";
+import { CategoryRowActions } from "./category-row-actions";
+import { SubCategoryRowActions } from "./sub-category-row-actions";
+import type { CategoryOption } from "../queries/get-all-categories";
 import type { Category } from "../types";
 
 type CategoriesTableProps = {
   categories: Category[];
+  categoryOptions: CategoryOption[];
 };
 
-export function CategoriesTable({ categories }: CategoriesTableProps) {
+export function CategoriesTable({
+  categories,
+  categoryOptions,
+}: CategoriesTableProps) {
   return (
     <div className="rounded-md border bg-card">
       <Table>
@@ -25,6 +32,7 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
             <TableHead>Name</TableHead>
             <TableHead>Sub-categories</TableHead>
             <TableHead className="w-36">Created</TableHead>
+            <TableHead className="w-32 text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -50,9 +58,24 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
                     <summary className="cursor-pointer text-sm text-muted-foreground transition-colors hover:text-foreground">
                       {category.subCategories.length} sub-categories
                     </summary>
-                    <ul className="mt-2 list-disc space-y-1 pl-4 text-sm">
+                    <ul className="mt-2 flex flex-col gap-1 text-sm">
                       {category.subCategories.map((subCategory) => (
-                        <li key={subCategory.id}>{subCategory.name}</li>
+                        <li
+                          key={subCategory.id}
+                          className="flex items-center justify-between gap-2 rounded-md bg-muted/50 py-1 pl-2"
+                        >
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate">{subCategory.name}</span>
+                            <span className="truncate text-xs text-muted-foreground">
+                              {subCategory.slug}
+                            </span>
+                          </div>
+                          <SubCategoryRowActions
+                            categoryId={category.id}
+                            categoryOptions={categoryOptions}
+                            subCategory={subCategory}
+                          />
+                        </li>
                       ))}
                     </ul>
                   </details>
@@ -61,6 +84,12 @@ export function CategoriesTable({ categories }: CategoriesTableProps) {
                 )}
               </TableCell>
               <TableCell>{formatDate(category.createdAt)}</TableCell>
+              <TableCell>
+                <CategoryRowActions
+                  category={category}
+                  categoryOptions={categoryOptions}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

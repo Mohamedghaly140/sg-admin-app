@@ -4,8 +4,8 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "sonner";
 import RedirectToast from "@/components/shared/redirect-toast";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
@@ -48,8 +48,8 @@ export default function RootLayout({
             <NuqsAdapter>
               <TooltipProvider>{children}</TooltipProvider>
             </NuqsAdapter>
+            <Toaster />
           </ThemeProvider>
-          <Toaster />
           <RedirectToast />
         </body>
       </html>
