@@ -16,6 +16,7 @@ features/                 # ← core of the codebase, one folder per admin featu
     schema/               # Zod schemas mirroring the API request bodies
     types/                # response types hand-written from the API contract
     index.tsx             # export default <Name>Feature — always a Server Component
+    *-feature.tsx         # optional extra Server Component route entries for multi-route features
 lib/
   utils.ts                # cn() helper
   env.ts                  # zod-validated env singleton (phase 1)
@@ -38,6 +39,7 @@ docs/                     # this documentation
 | `app-shell/` | `AppSidebar`, `NavMenu`, `Topbar`, `ThemeToggle`, `Breadcrumbs`, `nav-config.ts` — the role-filtered admin shell mounted by `app/(admin)/layout.tsx` |
 | `form-control/` | `FormControl` — Label + Input + FieldError in one |
 | `submit-button/` | `SubmitButton` — `useFormStatus` pending spinner |
+| `tag-input/` | `TagInput` — multi-value text input that submits repeated hidden fields |
 | `confirm-dialog/` | `ConfirmDialog` — AlertDialog wrapper for destructive actions |
 | `empty-state/` | `EmptyState` — icon + title + description + optional action |
 | `image-uploader/` | `ImageUploader` — signed Cloudinary upload UI with progress and hidden `imageId` / `imageUrl` fields |
@@ -48,7 +50,7 @@ Prefer these over reinventing. New cross-feature components go here; feature-spe
 
 ## Feature contract
 
-- Every feature exports exactly **one default** from `index.tsx`: `<Name>Feature`, a Server Component.
+- Every feature exports a default `<Name>Feature` Server Component from `index.tsx` for its primary route. When one feature maps to multiple routes, it may add additional default Server Component route entries such as `<Name>FormFeature` in `*-feature.tsx` files inside the same feature folder.
 - Pages are thin: a `page.tsx` awaits the nuqs searchParams loader (if any) and renders the feature. Nothing else.
 - Nothing outside a feature imports from inside it, except its matching page file.
 - `queries/` holds thin read wrappers around `apiFetch` — no business logic (the backend owns that).

@@ -1,12 +1,13 @@
-import { LucideShirt } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import ProductFormFeature from "@/features/products/product-form-feature";
 
-export default function ProductDetailPage() {
-  return (
-    <EmptyState
-      icon={<LucideShirt className="size-6" />}
-      title="Product detail"
-      description="Coming soon."
-    />
-  );
+type ProductDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function ProductDetailPage({
+  params,
+}: ProductDetailPageProps) {
+  const { id } = await params;
+
+  return <ProductFormFeature productId={id} />;
 }

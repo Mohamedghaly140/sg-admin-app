@@ -1,12 +1,5 @@
-import { LucideShirt } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import ProductFormFeature from "@/features/products/product-form-feature";
 
 export default function NewProductPage() {
-  return (
-    <EmptyState
-      icon={<LucideShirt className="size-6" />}
-      title="New product"
-      description="Coming soon."
-    />
-  );
+  return <ProductFormFeature />;
 }
