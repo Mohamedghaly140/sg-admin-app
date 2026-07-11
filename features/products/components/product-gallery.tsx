@@ -89,7 +89,7 @@ export function ProductGallery({ productId, images }: ProductGalleryProps) {
     });
   }
 
-  function handleAdd(image: ProductGalleryImageInput): Promise<void> {
+  function handleAdd(image: ProductGalleryImageInput): Promise<boolean> {
     const sortOrder = images.length
       ? Math.max(...images.map((galleryImage) => galleryImage.sortOrder)) + 1
       : 0;
@@ -100,7 +100,7 @@ export function ProductGallery({ productId, images }: ProductGalleryProps) {
       sortOrder,
     };
     const nextImages = [...optimisticImages, optimisticImage];
-    let operation = Promise.resolve();
+    let operation = Promise.resolve(false);
 
     startTransition(() => {
       operation = (async () => {
@@ -111,9 +111,10 @@ export function ProductGallery({ productId, images }: ProductGalleryProps) {
         });
         if (actionState.status === "SUCCESS") {
           toast.success(actionState.message);
-        } else {
-          toast.error(actionState.message);
+          return true;
         }
+        toast.error(actionState.message);
+        return false;
       })();
     });
 

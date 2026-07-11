@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 type ProductGalleryAddProps = {
   disabled?: boolean;
-  onAdd: (image: { imageId: string; imageUrl: string }) => Promise<void>;
+  onAdd: (image: { imageId: string; imageUrl: string }) => Promise<boolean>;
 };
 
 export function ProductGalleryAdd({
@@ -22,14 +22,8 @@ export function ProductGalleryAdd({
 }: ProductGalleryAddProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [isPending, startTransition] = useTransition();
-  const {
-    state,
-    selectFile,
-    uploadPendingFile,
-    retry,
-    remove,
-    hasPendingFile,
-  } = useImageUpload({ folder: "products" });
+  const { state, selectFile, uploadPendingFile, remove, hasPendingFile } =
+    useImageUpload({ folder: "products" });
   const isUploading = state.status === "uploading";
   const isDisabled = disabled || isPending || isUploading;
 
@@ -43,8 +37,10 @@ export function ProductGalleryAdd({
         toast.error("Choose an image before adding it to the gallery.");
         return;
       }
-      await onAdd(result.image);
-      remove();
+      const added = await onAdd(result.image);
+      if (added) {
+        remove();
+      }
     });
   }
 
@@ -171,9 +167,7 @@ export function ProductGalleryAdd({
               variant="link"
               size="sm"
               className="h-auto px-0 text-red-500"
-              onClick={() => {
-                void retry();
-              }}
+              onClick={handleAdd}
               disabled={isDisabled}
             >
               Try again
