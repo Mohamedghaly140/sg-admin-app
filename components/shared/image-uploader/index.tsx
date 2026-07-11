@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useImperativeHandle, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import { LucideImagePlus, LucideX } from "lucide-react";
 
 import FormControl from "@/components/shared/form-control";
@@ -20,21 +21,23 @@ export default function ImageUploader({
   defaultImageId,
   defaultImageUrl,
   label = "Image",
-  disabled = false,
   allowRemove = true,
-  onUploadingChange,
+  ref,
 }: ImageUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { state, selectFile, retry, remove, hasPendingFile } = useImageUpload({
-    folder,
-    defaultImageId,
-    defaultImageUrl,
-  });
+  const { pending } = useFormStatus();
+  const {
+    state,
+    selectFile,
+    uploadPendingFile,
+    retry,
+    remove,
+    hasPendingFile,
+  } = useImageUpload({ folder, defaultImageId, defaultImageUrl });
   const isUploading = state.status === "uploading";
+  const isDisabled = pending || isUploading;
 
-  useEffect(() => {
-    onUploadingChange?.(isUploading);
-  }, [isUploading, onUploadingChange]);
+  useImperativeHandle(ref, () => ({ uploadPendingFile }), [uploadPendingFile]);
 
   return (
     <div className="space-y-3">
@@ -56,7 +59,7 @@ export default function ImageUploader({
         <div
           className={cn(
             "relative flex min-h-40 flex-col items-center justify-center gap-3 rounded-md border border-dashed bg-muted/30 p-4 text-center transition-colors",
-            !disabled && "hover:bg-muted/50",
+            !isDisabled && "hover:bg-muted/50",
           )}
           onDragOver={(event) => {
             event.preventDefault();
@@ -64,8 +67,8 @@ export default function ImageUploader({
           onDrop={(event) => {
             event.preventDefault();
             const file = event.dataTransfer.files[0];
-            if (!disabled && file) {
-              void selectFile(file);
+            if (!isDisabled && file) {
+              selectFile(file);
             }
           }}
         >
@@ -109,7 +112,7 @@ export default function ImageUploader({
               size="icon-sm"
               className="absolute right-2 top-2 bg-background/90"
               onClick={remove}
-              disabled={disabled}
+              disabled={isDisabled}
               aria-label="Remove image"
             >
               <LucideX aria-hidden="true" />
@@ -121,11 +124,11 @@ export default function ImageUploader({
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
-            disabled={disabled}
+            disabled={isDisabled}
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) {
-                void selectFile(file);
+                selectFile(file);
                 event.target.value = "";
               }
             }}
@@ -135,7 +138,7 @@ export default function ImageUploader({
             type="button"
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
-            disabled={disabled || isUploading}
+            disabled={isDisabled}
           >
             <LucideImagePlus aria-hidden="true" />
             Choose image
@@ -170,7 +173,7 @@ export default function ImageUploader({
               onClick={() => {
                 void retry();
               }}
-              disabled={disabled}
+              disabled={isDisabled}
             >
               Try again
             </Button>

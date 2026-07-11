@@ -3,7 +3,12 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import { getUploadSignature } from "./actions/get-upload-signature";
-import type { UploadedImage, UploadFolder, UploadSignature } from "./types";
+import type {
+  UploadedImage,
+  UploadFolder,
+  UploadPendingFileResult,
+  UploadSignature,
+} from "./types";
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
@@ -25,7 +30,8 @@ export type ImageUploadState = {
 };
 
 type ImageUploadAction =
-  | { type: "UPLOAD_START"; previewUrl: string }
+  | { type: "FILE_SELECTED"; previewUrl: string }
+  | { type: "UPLOAD_START" }
   | { type: "PROGRESS"; progress: number }
   | { type: "SUCCESS"; image: UploadedImage }
   | { type: "ERROR"; message: string }
@@ -39,8 +45,9 @@ type UseImageUploadOptions = {
 
 type UseImageUploadResult = {
   state: ImageUploadState;
-  selectFile: (file: File) => Promise<void>;
-  retry: () => Promise<void>;
+  selectFile: (file: File) => void;
+  uploadPendingFile: () => Promise<UploadPendingFileResult>;
+  retry: () => Promise<UploadPendingFileResult>;
   remove: () => void;
   hasPendingFile: boolean;
 };
@@ -61,87 +68,97 @@ export function useImageUpload({
   const silentAbortUploadIdsRef = useRef(new Set<number>());
   const [hasPendingFile, setHasPendingFile] = useState(false);
 
-  const selectFile = useCallback(
-    async (file: File) => {
-      const validationMessage = validateImageFile(file);
-      if (validationMessage) {
-        pendingFileRef.current = null;
-        setHasPendingFile(false);
-        dispatch({ type: "ERROR", message: validationMessage });
-        return;
-      }
+  const selectFile = useCallback((file: File) => {
+    const validationMessage = validateImageFile(file);
+    if (validationMessage) {
+      pendingFileRef.current = null;
+      setHasPendingFile(false);
+      dispatch({ type: "ERROR", message: validationMessage });
+      return;
+    }
 
-      if (xhrRef.current) {
-        silentAbortUploadIdsRef.current.add(uploadIdRef.current);
-        xhrRef.current.abort();
+    if (xhrRef.current) {
+      silentAbortUploadIdsRef.current.add(uploadIdRef.current);
+      xhrRef.current.abort();
+      xhrRef.current = null;
+    }
+    uploadIdRef.current += 1;
+    revokeBlobUrl(activeBlobUrlRef.current);
+
+    const previewUrl = URL.createObjectURL(file);
+    activeBlobUrlRef.current = previewUrl;
+    pendingFileRef.current = file;
+    setHasPendingFile(true);
+    dispatch({ type: "FILE_SELECTED", previewUrl });
+  }, []);
+
+  const uploadPendingFile = useCallback(async (): Promise<UploadPendingFileResult> => {
+    const pendingFile = pendingFileRef.current;
+    if (!pendingFile) {
+      const image =
+        state.imageId && state.imageUrl
+          ? { imageId: state.imageId, imageUrl: state.imageUrl }
+          : null;
+      return { ok: true, image };
+    }
+
+    const uploadId = uploadIdRef.current + 1;
+    uploadIdRef.current = uploadId;
+    dispatch({ type: "UPLOAD_START" });
+
+    const signatureResult = await getUploadSignature({ folder });
+    if (uploadIdRef.current !== uploadId) {
+      return { ok: false };
+    }
+    if (!signatureResult.ok) {
+      dispatch({ type: "ERROR", message: signatureResult.message });
+      return { ok: false };
+    }
+
+    try {
+      const uploadedImage = await uploadToCloudinary(
+        pendingFile,
+        signatureResult.data,
+        (progress) => dispatch({ type: "PROGRESS", progress }),
+        (xhr) => {
+          xhrRef.current = xhr;
+        },
+      );
+
+      if (uploadIdRef.current !== uploadId) {
+        return { ok: false };
       }
       revokeBlobUrl(activeBlobUrlRef.current);
-
-      const uploadId = uploadIdRef.current + 1;
-      uploadIdRef.current = uploadId;
-      const previewUrl = URL.createObjectURL(file);
-      activeBlobUrlRef.current = previewUrl;
-      pendingFileRef.current = file;
-      setHasPendingFile(true);
-      dispatch({ type: "UPLOAD_START", previewUrl });
-
-      const signatureResult = await getUploadSignature({ folder });
+      activeBlobUrlRef.current = null;
+      xhrRef.current = null;
+      pendingFileRef.current = null;
+      setHasPendingFile(false);
+      dispatch({ type: "SUCCESS", image: uploadedImage });
+      return { ok: true, image: uploadedImage };
+    } catch (error) {
+      if (silentAbortUploadIdsRef.current.has(uploadId)) {
+        silentAbortUploadIdsRef.current.delete(uploadId);
+        return { ok: false };
+      }
       if (uploadIdRef.current !== uploadId) {
-        return;
+        return { ok: false };
       }
-      if (!signatureResult.ok) {
-        dispatch({ type: "ERROR", message: signatureResult.message });
-        return;
-      }
-
-      try {
-        const uploadedImage = await uploadToCloudinary(
-          file,
-          signatureResult.data,
-          (progress) => dispatch({ type: "PROGRESS", progress }),
-          (xhr) => {
-            xhrRef.current = xhr;
-          },
-        );
-
-        if (uploadIdRef.current !== uploadId) {
-          return;
-        }
-        revokeBlobUrl(previewUrl);
-        if (activeBlobUrlRef.current === previewUrl) {
-          activeBlobUrlRef.current = null;
-        }
-        xhrRef.current = null;
-        pendingFileRef.current = null;
-        setHasPendingFile(false);
-        dispatch({ type: "SUCCESS", image: uploadedImage });
-      } catch (error) {
-        if (silentAbortUploadIdsRef.current.has(uploadId)) {
-          silentAbortUploadIdsRef.current.delete(uploadId);
-          return;
-        }
-        if (uploadIdRef.current !== uploadId) {
-          return;
-        }
-        xhrRef.current = null;
-        dispatch({
-          type: "ERROR",
-          message:
-            error instanceof Error
-              ? error.message
-              : "Upload failed. Please try again.",
-        });
-      }
-    },
-    [folder],
-  );
-
-  const retry = useCallback(async () => {
-    const pendingFile = pendingFileRef.current;
-    if (pendingFile) {
-      await selectFile(pendingFile);
+      xhrRef.current = null;
+      dispatch({
+        type: "ERROR",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Upload failed. Please try again.",
+      });
+      return { ok: false };
     }
-  }, [selectFile]);
+  }, [folder, state.imageId, state.imageUrl]);
+
+  const retry = useCallback(
+    () => uploadPendingFile(),
+    [uploadPendingFile],
+  );
 
   const remove = useCallback(() => {
     if (xhrRef.current) {
@@ -173,6 +190,7 @@ export function useImageUpload({
   return {
     state,
     selectFile,
+    uploadPendingFile,
     retry,
     remove,
     hasPendingFile,
@@ -209,12 +227,20 @@ function imageUploadReducer(
   action: ImageUploadAction,
 ): ImageUploadState {
   switch (action.type) {
+    case "FILE_SELECTED":
+      return {
+        status: "idle",
+        progress: 0,
+        previewUrl: action.previewUrl,
+        imageId: null,
+        imageUrl: null,
+        errorMessage: null,
+      };
     case "UPLOAD_START":
       return {
         ...state,
         status: "uploading",
         progress: 0,
-        previewUrl: action.previewUrl,
         errorMessage: null,
       };
     case "PROGRESS":

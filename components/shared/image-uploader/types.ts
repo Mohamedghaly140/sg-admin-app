@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type UploadFolder = "products" | "categories";
 
 export type UploadSignature = {
@@ -14,16 +16,23 @@ export type UploadedImage = {
   imageUrl: string;
 };
 
+export type UploadPendingFileResult =
+  | { ok: true; image: UploadedImage | null }
+  | { ok: false };
+
+export type ImageUploaderHandle = {
+  uploadPendingFile: () => Promise<UploadPendingFileResult>;
+};
+
 export type ImageUploaderProps = {
+  ref?: Ref<ImageUploaderHandle>;
   folder: UploadFolder;
   imageIdName: string;
   imageUrlName: string;
   defaultImageId?: string | null;
   defaultImageUrl?: string | null;
   label?: string;
-  disabled?: boolean;
   allowRemove?: boolean;
-  onUploadingChange?: (uploading: boolean) => void;
 };
 
 export type UploadSignatureResult =

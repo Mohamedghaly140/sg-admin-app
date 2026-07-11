@@ -1,12 +1,13 @@
 "use client";
 
 import { LucideImagePlus, LucidePencil } from "lucide-react";
-import { useActionState, useState, type ReactElement } from "react";
+import { useActionState, useRef, useState, type ReactElement } from "react";
 
 import Form from "@/components/shared/form/form";
 import { EMPTY_ACTION_STATE } from "@/components/shared/form/utils/to-action-state";
 import FormControl from "@/components/shared/form-control";
 import ImageUploader from "@/components/shared/image-uploader";
+import type { ImageUploaderHandle } from "@/components/shared/image-uploader/types";
 import SubmitButton from "@/components/shared/submit-button";
 import {
   Dialog,
@@ -32,7 +33,7 @@ export function CategoryFormDialog({
   category,
 }: CategoryFormDialogProps) {
   const [open, setOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const uploaderRef = useRef<ImageUploaderHandle>(null);
   const formAction = category
     ? updateCategory.bind(null, category.id)
     : createCategory;
@@ -44,6 +45,18 @@ export function CategoryFormDialog({
 
   function handleSuccess() {
     setOpen(false);
+  }
+
+  async function handleSubmit(formData: FormData) {
+    const result = await uploaderRef.current?.uploadPendingFile();
+    if (result?.ok === false) {
+      return;
+    }
+    if (result?.image) {
+      formData.set("imageId", result.image.imageId);
+      formData.set("imageUrl", result.image.imageUrl);
+    }
+    action(formData);
   }
 
   return (
@@ -62,7 +75,7 @@ export function CategoryFormDialog({
         </DialogHeader>
 
         <Form
-          action={action}
+          action={handleSubmit}
           actionState={actionState}
           onSuccess={handleSuccess}
         >
@@ -83,14 +96,13 @@ export function CategoryFormDialog({
           ) : null}
 
           <ImageUploader
+            ref={uploaderRef}
             folder="categories"
             imageIdName="imageId"
             imageUrlName="imageUrl"
             defaultImageId={category?.imageId}
             defaultImageUrl={category?.imageUrl}
             allowRemove={!category?.imageUrl}
-            disabled={isUploading}
-            onUploadingChange={setIsUploading}
           />
 
           <DialogFooter>
@@ -103,7 +115,6 @@ export function CategoryFormDialog({
                   <LucideImagePlus aria-hidden="true" />
                 )
               }
-              disabled={isUploading}
             />
           </DialogFooter>
         </Form>
