@@ -20,10 +20,13 @@ Always use **Bun** — never `npm`, `npx`, or `yarn`.
 
 ```bash
 bun dev                        # start dev server
-bun run build                  # production build
+bun run build                  # production build (also type-checks)
 bun lint                       # ESLint
+bunx tsc --noEmit               # type-check only, no build
 bunx shadcn@latest add <item>  # install a shadcn primitive
 ```
+
+No automated test suite is configured (no Jest/Vitest, no `*.test.*` files) — rely on `bun lint`, `bunx tsc --noEmit`, and manual verification in the browser.
 
 ## Implementation status
 
