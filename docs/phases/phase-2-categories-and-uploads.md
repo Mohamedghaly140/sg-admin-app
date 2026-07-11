@@ -27,13 +27,13 @@ Phase 1 (API client, providers, shell, form primitives).
 - [x] List table with expandable sub-category rows/panel, `EmptyState`, skeleton `loading.tsx`.
 - [x] Actions (one file each): `create-category`, `update-category`, `delete-category`, `create-sub-category`, `update-sub-category`, `delete-sub-category`.
 - [x] Dialog forms with `Form` + `FormControl` + `SubmitButton`; deletes behind `ConfirmDialog`.
-- [ ] Error mapping: `409 DUPLICATE_RESOURCE` ("name already exists") and `409 FOREIGN_KEY_CONSTRAINT` ("still has sub-categories/products") with specific copy.
+- [x] Error mapping: `409 DUPLICATE_RESOURCE` ("name already exists") and `409 FOREIGN_KEY_CONSTRAINT` ("still has sub-categories/products") with specific copy.
 
 ## Acceptance criteria
 
 - [ ] Full category + sub-category CRUD works against the live API.
 - [ ] Backend 422s render under the matching inputs (same UI path as Zod errors).
-- [ ] Both 409s toast their specific human messages.
+- [x] Both 409s toast their specific human messages.
 - [ ] A cover image uploads browser → Cloudinary, renders transformed via `cldUrl`, and survives create/edit round-trips.
 - [x] `slug` is displayed but never editable and never sent.
 - [x] Search + pagination are URL-shareable; page resets to 1 on search change.
