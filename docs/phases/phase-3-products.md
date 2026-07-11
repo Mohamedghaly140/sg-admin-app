@@ -16,10 +16,10 @@ Phase 2 (`ImageUploader`, categories exist for the form selects).
 
 ### 1. List (`/products`)
 
-- [ ] `hooks/use-products-params.ts` — `search`, `status`, `categoryId`, `featured`, `page`, `limit`.
-- [ ] Queries: `get-products` + `get-product-filter-options` (`Promise.all`).
-- [ ] Table per the screen spec (thumbnail, price/discount, quantity/sold, status + featured badges).
-- [ ] Row actions: `duplicate-product` (navigate to new draft), `toggle-product-featured`, `set-product-status`, `delete-product` (**branch on the 200 `{deleted, archived}` flags** — two different toasts).
+- [x] `hooks/use-products-params.ts` — `search`, `status`, `categoryId`, `featured`, `page`, `limit`.
+- [x] Queries: `get-products` + `get-product-filter-options` (`Promise.all`).
+- [x] Table per the screen spec (thumbnail, price/discount, quantity/sold, status + featured badges).
+- [x] Row actions: `duplicate-product` (navigate to new draft), `toggle-product-featured`, `set-product-status`, `delete-product` (**branch on the 200 `{deleted, archived}` flags** — two different toasts).
 
 ### 2. Form (`/products/new`, `/products/[id]`)
 
