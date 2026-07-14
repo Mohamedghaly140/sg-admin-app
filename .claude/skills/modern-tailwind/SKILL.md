@@ -24,7 +24,8 @@ description: Build clean, scalable UIs with Tailwind CSS using modern utilities 
 
 ## Theming & Customization
 
-- Extend the theme in `tailwind.config` instead of ad-hoc custom classes
+- For this repository, use Tailwind v4 CSS-first theming in `app/globals.css`
+  via `@theme`; do not add `tailwind.config.*`
 - Use `@layer` for custom utilities/components when repetition is unavoidable
 - Avoid `@apply` except for small, repeatable patterns
 
