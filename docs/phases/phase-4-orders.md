@@ -32,14 +32,14 @@ Refunds with money movement · manual order creation · editing order contents �
 
 ### 3. Actions
 
-- [ ] `update-order-status` — status control renders **only the legal next transitions** from the state machine (PENDING→PROCESSING, →CANCELLED while unpaid, PROCESSING→SHIPPED, SHIPPED→DELIVERED [CASH must be paid], DELIVERED→REFUNDED); optional `notes` (≤ 1000, overwrites); `409 INVALID_STATUS_TRANSITION` → API message. Confirm copy mentions the automatic customer email (and stock/coupon release on cancel).
-- [ ] `mark-order-paid` — `ConfirmDialog` with a **one-way** warning; hidden once paid; handles the 409 (CARD/paid/terminal).
+- [x] `update-order-status` — status control renders **only the legal next transitions** from the state machine (PENDING→PROCESSING, →CANCELLED while unpaid, PROCESSING→SHIPPED, SHIPPED→DELIVERED [CASH must be paid], DELIVERED→REFUNDED); optional `notes` (≤ 1000, overwrites); `409 INVALID_STATUS_TRANSITION` → API message. Confirm copy mentions the automatic customer email (and stock/coupon release on cancel).
+- [x] `mark-order-paid` — `ConfirmDialog` with a **one-way** warning; hidden once paid; handles the 409 (CARD/paid/terminal).
 
 ## Acceptance criteria
 
-- [ ] The status control never offers an illegal transition or the current status.
-- [ ] "Delivered" is disabled on unpaid CASH orders with a "mark paid first" hint.
-- [ ] Mark-paid disappears once `isPaid`; cancelling is only offered while unpaid.
-- [ ] Guest orders render the full `anon*` contact + shipping snapshot correctly.
-- [ ] All list filters are URL-shareable; empty vs. filtered-empty states differ.
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] The status control never offers an illegal transition or the current status.
+- [x] "Delivered" is disabled on unpaid CASH orders with a "mark paid first" hint.
+- [x] Mark-paid disappears once `isPaid`; cancelling is only offered while unpaid.
+- [x] Guest orders render the full `anon*` contact + shipping snapshot correctly.
+- [x] All list filters are URL-shareable; empty vs. filtered-empty states differ.
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.

@@ -4,6 +4,8 @@ import { formatDateTime } from "@/lib/format";
 
 import { OrderCustomerPanel } from "./components/order-customer-panel";
 import { OrderItemsTable } from "./components/order-items-table";
+import { MarkOrderPaidButton } from "./components/mark-order-paid-button";
+import { OrderStatusControl } from "./components/order-status-control";
 import { OrderStatusBadge } from "./components/order-status-badge";
 import { OrderTotalsCard } from "./components/order-totals-card";
 import { getOrder } from "./queries/get-order";
@@ -53,6 +55,21 @@ export default async function OrderDetailFeature({
       </div>
 
       <OrderItemsTable items={order.items} />
+
+      <section aria-label="Order actions" className="flex flex-wrap gap-2">
+        <OrderStatusControl
+          orderId={order.id}
+          currentStatus={order.status}
+          isPaid={order.isPaid}
+          paymentMethod={order.paymentMethod}
+        />
+        <MarkOrderPaidButton
+          orderId={order.id}
+          status={order.status}
+          isPaid={order.isPaid}
+          paymentMethod={order.paymentMethod}
+        />
+      </section>
     </section>
   );
 }

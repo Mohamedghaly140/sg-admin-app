@@ -13,11 +13,13 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type ConfirmDialogBaseProps = {
+  children?: React.ReactNode;
   title?: string;
   description?: string;
   confirmLabel?: string;
   finalFocus?: React.ComponentProps<typeof AlertDialogContent>["finalFocus"];
   pending?: boolean;
+  variant?: "destructive" | "default";
   onConfirm: () => void;
 };
 
@@ -38,11 +40,13 @@ type ConfirmDialogProps = ConfirmDialogBaseProps &
 
 export function ConfirmDialog(props: ConfirmDialogProps) {
   const {
+    children,
     title = "Are you sure?",
     description = "This action cannot be undone.",
     confirmLabel = "Confirm",
     finalFocus,
     pending = false,
+    variant = "destructive",
     onConfirm,
   } = props;
 
@@ -59,10 +63,11 @@ export function ConfirmDialog(props: ConfirmDialogProps) {
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
+        {children}
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            variant="destructive"
+            variant={variant}
             disabled={pending}
             onClick={onConfirm}
           >
