@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import type { PageMeta } from "@/lib/api/http";
 
-import type { CategoriesParams } from "../hooks/use-categories-params";
+import {
+  buildCategoriesHref,
+  type CategoriesParams,
+} from "../hooks/use-categories-params";
 
 type CategoriesPaginationProps = {
   meta?: PageMeta;
@@ -28,7 +31,7 @@ export function CategoriesPagination({
       <div className="flex gap-2">
         {meta.hasPrev ? (
           <Link
-            href={toHref({ ...params, page: meta.page - 1 })}
+            href={buildCategoriesHref({ ...params, page: meta.page - 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Previous
@@ -40,7 +43,7 @@ export function CategoriesPagination({
         )}
         {meta.hasNext ? (
           <Link
-            href={toHref({ ...params, page: meta.page + 1 })}
+            href={buildCategoriesHref({ ...params, page: meta.page + 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Next
@@ -53,18 +56,4 @@ export function CategoriesPagination({
       </div>
     </nav>
   );
-}
-
-function toHref(params: CategoriesParams): string {
-  const searchParams = new URLSearchParams({
-    page: String(params.page),
-    limit: String(params.limit),
-  });
-
-  const search = params.search.trim();
-  if (search) {
-    searchParams.set("search", search);
-  }
-
-  return `/categories?${searchParams.toString()}`;
 }

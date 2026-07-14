@@ -122,5 +122,5 @@ Branch on `code`, **never** on `message` or HTTP status ([error-code table](../i
 
 - **Money and record decimals are JSON strings** (`"1299.00"`, EGP only). Never do float math; display via `formatEGP()` in `lib/format.ts`. Exception: [dashboard](../integration/admin/01-dashboard.md) and [analytics](../integration/admin/02-analytics.md) return plain **numbers** (chart inputs).
 - **Dates** are ISO 8601 UTC; analytics buckets are `"YYYY-MM-DD"`.
-- **Pagination** is server-side: send `page`/`limit`, render from `meta`. No client-side pagination anywhere.
+- **Pagination** is server-side: send `page`/`limit`, render from `meta`. No client-side pagination anywhere. Every paginated list feature must call `redirectToLastPageIfOutOfRange(meta, buildHref)` after its fetch so a mutation that empties the current page redirects to the last valid page instead of stranding the operator.
 - **Rate limit**: 100 req/60s per IP — no polling loops (dashboard metrics at most ~1/min).

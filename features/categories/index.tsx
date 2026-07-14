@@ -3,14 +3,18 @@ import { LucideFolderOpen, LucidePlus } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { CategoriesPagination } from "./components/categories-pagination";
 import { CategoriesSearch } from "./components/categories-search";
 import { CategoriesTable } from "./components/categories-table";
 import { CategoryFormDialog } from "./components/category-form-dialog";
+import {
+  buildCategoriesHref,
+  type CategoriesParams,
+} from "./hooks/use-categories-params";
 import { getAllCategories } from "./queries/get-all-categories";
 import { getCategories } from "./queries/get-categories";
-import type { CategoriesParams } from "./hooks/use-categories-params";
 
 type CategoriesFeatureProps = {
   searchParams: CategoriesParams;
@@ -34,6 +38,9 @@ export default async function CategoriesFeature({
   }
 
   const [{ data: categories, meta }, categoryOptions] = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildCategoriesHref({ ...searchParams, page }),
+  );
 
   const newCategoryTrigger = (
     <Button type="button">

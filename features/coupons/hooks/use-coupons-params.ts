@@ -1,6 +1,7 @@
 import { debounce, useQueryStates } from "nuqs";
 import {
   createSearchParamsCache,
+  createSerializer,
   parseAsInteger,
   parseAsString,
   parseAsStringLiteral,
@@ -23,10 +24,15 @@ export const couponsParams = {
 };
 
 export const loadCouponsParams = createSearchParamsCache(couponsParams);
+export const serializeCouponsParams = createSerializer(couponsParams);
 
 export type CouponsParams = Awaited<
   ReturnType<typeof loadCouponsParams.parse>
 >;
+
+export function buildCouponsHref(params: CouponsParams): string {
+  return `/coupons${serializeCouponsParams(params)}`;
+}
 
 export function useCouponsParams() {
   return useQueryStates(couponsParams, {

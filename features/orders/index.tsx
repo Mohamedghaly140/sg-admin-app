@@ -2,6 +2,7 @@ import { LucideShoppingCart } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { OrdersDateRangeFilter } from "./components/orders-date-range-filter";
 import { OrdersPagination } from "./components/orders-pagination";
@@ -10,7 +11,10 @@ import { OrdersPaymentMethodFilter } from "./components/orders-payment-method-fi
 import { OrdersSearch } from "./components/orders-search";
 import { OrdersStatusFilter } from "./components/orders-status-filter";
 import { OrdersTable } from "./components/orders-table";
-import type { OrdersParams } from "./hooks/use-orders-params";
+import {
+  buildOrdersHref,
+  type OrdersParams,
+} from "./hooks/use-orders-params";
 import { getOrders } from "./queries/get-orders";
 
 type OrdersFeatureProps = {
@@ -29,6 +33,9 @@ export default async function OrdersFeature({
   }
 
   const { data: orders, meta } = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildOrdersHref({ ...searchParams, page }),
+  );
   const hasFilters = Boolean(
     searchParams.search.trim() ||
       searchParams.status ||

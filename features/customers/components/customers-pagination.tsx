@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { PageMeta } from "@/lib/api/http";
 
 import {
-  serializeCustomersParams,
+  buildCustomersHref,
   type CustomersParams,
 } from "../hooks/use-customers-params";
 
@@ -31,7 +31,7 @@ export function CustomersPagination({
       <div className="flex gap-2">
         {meta.hasPrev ? (
           <Link
-            href={toHref({ ...params, page: meta.page - 1 })}
+            href={buildCustomersHref({ ...params, page: meta.page - 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Previous
@@ -43,7 +43,7 @@ export function CustomersPagination({
         )}
         {meta.hasNext ? (
           <Link
-            href={toHref({ ...params, page: meta.page + 1 })}
+            href={buildCustomersHref({ ...params, page: meta.page + 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Next
@@ -56,8 +56,4 @@ export function CustomersPagination({
       </div>
     </nav>
   );
-}
-
-function toHref(params: CustomersParams): string {
-  return `/customers${serializeCustomersParams(params)}`;
 }

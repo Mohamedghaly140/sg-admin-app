@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { PageMeta } from "@/lib/api/http";
 
 import {
-  serializeOrdersParams,
+  buildOrdersHref,
   type OrdersParams,
 } from "../hooks/use-orders-params";
 
@@ -28,7 +28,7 @@ export function OrdersPagination({ meta, params }: OrdersPaginationProps) {
       <div className="flex gap-2">
         {meta.hasPrev ? (
           <Link
-            href={toHref({ ...params, page: meta.page - 1 })}
+            href={buildOrdersHref({ ...params, page: meta.page - 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Previous
@@ -40,7 +40,7 @@ export function OrdersPagination({ meta, params }: OrdersPaginationProps) {
         )}
         {meta.hasNext ? (
           <Link
-            href={toHref({ ...params, page: meta.page + 1 })}
+            href={buildOrdersHref({ ...params, page: meta.page + 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Next
@@ -53,8 +53,4 @@ export function OrdersPagination({ meta, params }: OrdersPaginationProps) {
       </div>
     </nav>
   );
-}
-
-function toHref(params: OrdersParams): string {
-  return `/orders${serializeOrdersParams(params)}`;
 }

@@ -3,12 +3,16 @@ import { LucidePlus, LucideTruck } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { ShippingZoneFormDialog } from "./components/shipping-zone-form-dialog";
 import { ShippingZonesPagination } from "./components/shipping-zones-pagination";
 import { ShippingZonesSearch } from "./components/shipping-zones-search";
 import { ShippingZonesTable } from "./components/shipping-zones-table";
-import type { ShippingZonesParams } from "./hooks/use-shipping-zones-params";
+import {
+  buildShippingZonesHref,
+  type ShippingZonesParams,
+} from "./hooks/use-shipping-zones-params";
 import { getShippingZones } from "./queries/get-shipping-zones";
 
 type ShippingZonesFeatureProps = {
@@ -27,6 +31,9 @@ export default async function ShippingZonesFeature({
   }
 
   const { data: zones, meta } = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildShippingZonesHref({ ...searchParams, page }),
+  );
   const hasActiveFilters = Boolean(searchParams.search.trim());
   const newZoneTrigger = (
     <Button type="button">

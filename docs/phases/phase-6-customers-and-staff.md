@@ -23,16 +23,16 @@ Phase 1.
 
 ### 2. `features/staff-users/` (`/staff-users`, ADMIN-only)
 
-- [ ] `hooks/use-staff-users-params.ts` — `search`, `role`, `active`, `page`, `limit`.
-- [ ] List table with role/active badges.
-- [ ] Actions: `create-user` (name/email/phone/password/role — Clerk rejections arrive as 422 with the reason in `message`), `update-user` (**role + active together, both required** — send the untouched current value), `delete-user` (type-to-confirm the email; irreversible; orders survive unlinked).
-- [ ] UI guardrails: disable role/active/delete on the operator's **own row**; when only one active ADMIN exists, disable demote/deactivate/delete on it with a tooltip. API `409 SELF_MODIFICATION_FORBIDDEN` / `LAST_ADMIN_REQUIRED` handled as the backstop.
+- [x] `hooks/use-staff-users-params.ts` — `search`, `role`, `active`, `page`, `limit`.
+- [x] List table with role/active badges.
+- [x] Actions: `create-user` (name/email/phone/password/role — Clerk rejections arrive as 422 with the reason in `message`), `update-user` (**role + active together, both required** — send the untouched current value), `delete-user` (type-to-confirm the email; irreversible; orders survive unlinked).
+- [x] UI guardrails: disable role/active/delete on the operator's **own row**; when only one active ADMIN exists, disable demote/deactivate/delete on it with a tooltip. API `409 SELF_MODIFICATION_FORBIDDEN` / `LAST_ADMIN_REQUIRED` handled as the backstop.
 
 ## Acceptance criteria
 
-- [ ] MANAGER cannot reach `/staff-users`: nav hidden, middleware redirects, and a direct API probe would 403.
-- [ ] Acting on your own account is disabled client-side; forcing it surfaces the 409 message.
-- [ ] Last-admin protection is visible (disabled + tooltip) and the 409 is handled.
-- [ ] Reset-password 503 shows the "password changed, email failed" message, not a generic error.
-- [ ] Deactivated customer/staff shows the correct badge immediately after the action.
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] MANAGER cannot reach `/staff-users`: nav hidden, middleware redirects, and a direct API probe would 403.
+- [x] Acting on your own account is disabled client-side; forcing it surfaces the 409 message.
+- [x] Last-admin protection is visible (disabled + tooltip) and the 409 is handled.
+- [x] Reset-password 503 shows the "password changed, email failed" message, not a generic error.
+- [x] Deactivated customer/staff shows the correct badge immediately after the action.
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.

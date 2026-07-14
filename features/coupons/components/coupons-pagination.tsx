@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import type { PageMeta } from "@/lib/api/http";
 
-import type { CouponsParams } from "../hooks/use-coupons-params";
+import {
+  buildCouponsHref,
+  type CouponsParams,
+} from "../hooks/use-coupons-params";
 
 type CouponsPaginationProps = {
   meta?: PageMeta;
@@ -28,7 +31,7 @@ export function CouponsPagination({
       <div className="flex gap-2">
         {meta.hasPrev ? (
           <Link
-            href={toHref({ ...params, page: meta.page - 1 })}
+            href={buildCouponsHref({ ...params, page: meta.page - 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Previous
@@ -40,7 +43,7 @@ export function CouponsPagination({
         )}
         {meta.hasNext ? (
           <Link
-            href={toHref({ ...params, page: meta.page + 1 })}
+            href={buildCouponsHref({ ...params, page: meta.page + 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Next
@@ -53,22 +56,4 @@ export function CouponsPagination({
       </div>
     </nav>
   );
-}
-
-function toHref(params: CouponsParams): string {
-  const searchParams = new URLSearchParams({
-    page: String(params.page),
-    limit: String(params.limit),
-  });
-
-  const search = params.search.trim();
-  if (search) {
-    searchParams.set("search", search);
-  }
-
-  if (params.status) {
-    searchParams.set("status", params.status);
-  }
-
-  return `/coupons?${searchParams.toString()}`;
 }

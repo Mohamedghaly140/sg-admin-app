@@ -4,6 +4,7 @@ import { LucidePackageOpen, LucidePlus } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { ProductsCategoryFilter } from "./components/products-category-filter";
 import { ProductsFeaturedFilter } from "./components/products-featured-filter";
@@ -11,7 +12,10 @@ import { ProductsPagination } from "./components/products-pagination";
 import { ProductsSearch } from "./components/products-search";
 import { ProductsStatusFilter } from "./components/products-status-filter";
 import { ProductsTable } from "./components/products-table";
-import type { ProductsParams } from "./hooks/use-products-params";
+import {
+  buildProductsHref,
+  type ProductsParams,
+} from "./hooks/use-products-params";
 import { getProductFilterOptions } from "./queries/get-product-filter-options";
 import { getProducts } from "./queries/get-products";
 
@@ -37,6 +41,9 @@ export default async function ProductsFeature({
   }
 
   const [{ data: products, meta }, { data: filterOptions }] = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildProductsHref({ ...searchParams, page }),
+  );
   const hasFilters = Boolean(
     searchParams.search.trim() ||
       searchParams.status ||

@@ -3,19 +3,19 @@ import Link from "next/link";
 import type { PageMeta } from "@/lib/api/http";
 
 import {
-  buildShippingZonesHref,
-  type ShippingZonesParams,
-} from "../hooks/use-shipping-zones-params";
+  buildStaffUsersHref,
+  type StaffUsersParams,
+} from "../hooks/use-staff-users-params";
 
-type ShippingZonesPaginationProps = {
+type StaffUsersPaginationProps = {
   meta?: PageMeta;
-  params: ShippingZonesParams;
+  params: StaffUsersParams;
 };
 
-export function ShippingZonesPagination({
+export function StaffUsersPagination({
   meta,
   params,
-}: ShippingZonesPaginationProps) {
+}: StaffUsersPaginationProps) {
   if (!meta || meta.totalPages <= 1) {
     return null;
   }
@@ -23,7 +23,7 @@ export function ShippingZonesPagination({
   return (
     <nav
       className="flex items-center justify-between gap-3 text-sm"
-      aria-label="Shipping zones pagination"
+      aria-label="Staff users pagination"
     >
       <p className="text-muted-foreground">
         Page {meta.page} of {meta.totalPages}
@@ -31,10 +31,7 @@ export function ShippingZonesPagination({
       <div className="flex gap-2">
         {meta.hasPrev ? (
           <Link
-            href={buildShippingZonesHref({
-              ...params,
-              page: meta.page - 1,
-            })}
+            href={buildStaffUsersHref({ ...params, page: meta.page - 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Previous
@@ -46,10 +43,7 @@ export function ShippingZonesPagination({
         )}
         {meta.hasNext ? (
           <Link
-            href={buildShippingZonesHref({
-              ...params,
-              page: meta.page + 1,
-            })}
+            href={buildStaffUsersHref({ ...params, page: meta.page + 1 })}
             className="inline-flex h-8 items-center rounded-lg border px-3 font-medium transition-colors hover:bg-muted"
           >
             Next

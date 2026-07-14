@@ -3,13 +3,17 @@ import { LucidePlus, LucideTicket } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { CouponFormDialog } from "./components/coupon-form-dialog";
 import { CouponsPagination } from "./components/coupons-pagination";
 import { CouponsSearch } from "./components/coupons-search";
 import { CouponsStatusFilter } from "./components/coupons-status-filter";
 import { CouponsTable } from "./components/coupons-table";
-import type { CouponsParams } from "./hooks/use-coupons-params";
+import {
+  buildCouponsHref,
+  type CouponsParams,
+} from "./hooks/use-coupons-params";
 import { getCoupons } from "./queries/get-coupons";
 
 type CouponsFeatureProps = {
@@ -28,6 +32,9 @@ export default async function CouponsFeature({
   }
 
   const { data: coupons, meta } = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildCouponsHref({ ...searchParams, page }),
+  );
   const hasActiveFilters = Boolean(
     searchParams.search.trim() || searchParams.status,
   );

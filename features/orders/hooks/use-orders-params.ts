@@ -38,6 +38,10 @@ export const serializeOrdersParams = createSerializer(ordersParams);
 
 export type OrdersParams = Awaited<ReturnType<typeof loadOrdersParams.parse>>;
 
+export function buildOrdersHref(params: OrdersParams): string {
+  return `/orders${serializeOrdersParams(params)}`;
+}
+
 export function useOrdersParams() {
   return useQueryStates(ordersParams, {
     shallow: false,

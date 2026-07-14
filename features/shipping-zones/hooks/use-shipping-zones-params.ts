@@ -1,6 +1,7 @@
 import { debounce, useQueryStates } from "nuqs";
 import {
   createSearchParamsCache,
+  createSerializer,
   parseAsInteger,
   parseAsString,
 } from "nuqs/server";
@@ -13,10 +14,16 @@ export const shippingZonesParams = {
 
 export const loadShippingZonesParams =
   createSearchParamsCache(shippingZonesParams);
+export const serializeShippingZonesParams =
+  createSerializer(shippingZonesParams);
 
 export type ShippingZonesParams = Awaited<
   ReturnType<typeof loadShippingZonesParams.parse>
 >;
+
+export function buildShippingZonesHref(params: ShippingZonesParams): string {
+  return `/shipping-zones${serializeShippingZonesParams(params)}`;
+}
 
 export function useShippingZonesParams() {
   return useQueryStates(shippingZonesParams, {

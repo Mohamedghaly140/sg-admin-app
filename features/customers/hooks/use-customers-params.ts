@@ -23,6 +23,10 @@ export type CustomersParams = Awaited<
   ReturnType<typeof loadCustomersParams.parse>
 >;
 
+export function buildCustomersHref(params: CustomersParams): string {
+  return `/customers${serializeCustomersParams(params)}`;
+}
+
 export function useCustomersParams() {
   return useQueryStates(customersParams, {
     shallow: false,

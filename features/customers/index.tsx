@@ -2,12 +2,16 @@ import { LucideUsers } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
+import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
 import { CustomersActiveFilter } from "./components/customers-active-filter";
 import { CustomersPagination } from "./components/customers-pagination";
 import { CustomersSearch } from "./components/customers-search";
 import { CustomersTable } from "./components/customers-table";
-import type { CustomersParams } from "./hooks/use-customers-params";
+import {
+  buildCustomersHref,
+  type CustomersParams,
+} from "./hooks/use-customers-params";
 import { getCustomers } from "./queries/get-customers";
 
 type CustomersFeatureProps = {
@@ -26,6 +30,9 @@ export default async function CustomersFeature({
   }
 
   const { data: customers, meta } = response;
+  redirectToLastPageIfOutOfRange(meta, (page) =>
+    buildCustomersHref({ ...searchParams, page }),
+  );
   const hasFilters = Boolean(searchParams.search.trim() || searchParams.active);
 
   return (

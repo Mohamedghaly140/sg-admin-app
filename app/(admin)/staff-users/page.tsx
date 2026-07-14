@@ -1,12 +1,14 @@
-import { LucideUserCog } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import StaffUsersFeature from "@/features/staff-users";
+import { loadStaffUsersParams } from "@/features/staff-users/hooks/use-staff-users-params";
 
-export default function StaffUsersPage() {
-  return (
-    <EmptyState
-      icon={<LucideUserCog className="size-6" />}
-      title="Staff users"
-      description="Coming soon."
-    />
-  );
+type StaffUsersPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function StaffUsersPage({
+  searchParams,
+}: StaffUsersPageProps) {
+  const params = await loadStaffUsersParams.parse(searchParams);
+
+  return <StaffUsersFeature searchParams={params} />;
 }

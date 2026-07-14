@@ -29,6 +29,10 @@ export type ProductsParams = Awaited<
   ReturnType<typeof loadProductsParams.parse>
 >;
 
+export function buildProductsHref(params: ProductsParams): string {
+  return `/products${serializeProductsParams(params)}`;
+}
+
 export function useProductsParams() {
   return useQueryStates(productsParams, {
     shallow: false,
