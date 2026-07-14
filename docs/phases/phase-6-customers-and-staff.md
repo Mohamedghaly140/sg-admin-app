@@ -16,10 +16,10 @@ Phase 1.
 
 ### 1. `features/customers/` (`/customers`, `/customers/[id]`)
 
-- [ ] `hooks/use-customers-params.ts` — `search`, `active`, `page`, `limit` (**`active`, not `role`** — role filtering belongs to staff users).
-- [ ] List table + detail (profile, addresses, order history linking to `/orders/[id]`); staff IDs 404 → `notFound()`.
-- [ ] Actions behind `ConfirmDialog`: `set-customer-active` (ban warning: `ACCOUNT_DISABLED` everywhere) and `reset-customer-password` (signs the customer out everywhere; password never shown).
-- [ ] Error handling: `409 SELF_MODIFICATION_FORBIDDEN`, `409 FORBIDDEN_TARGET`; **`503` on reset-password = password WAS changed but the email failed** — exact copy per the screen spec.
+- [x] `hooks/use-customers-params.ts` — `search`, `active`, `page`, `limit` (**`active`, not `role`** — role filtering belongs to staff users).
+- [x] List table + detail (profile, addresses, order history linking to `/orders/[id]`); staff IDs 404 → `notFound()`.
+- [x] Actions behind `ConfirmDialog`: `set-customer-active` (ban warning: `ACCOUNT_DISABLED` everywhere) and `reset-customer-password` (signs the customer out everywhere; password never shown).
+- [x] Error handling: `409 SELF_MODIFICATION_FORBIDDEN`, `409 FORBIDDEN_TARGET`; **`503` on reset-password = password WAS changed but the email failed** — exact copy per the screen spec.
 
 ### 2. `features/staff-users/` (`/staff-users`, ADMIN-only)
 

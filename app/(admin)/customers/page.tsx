@@ -1,12 +1,14 @@
-import { LucideUsers } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import CustomersFeature from "@/features/customers";
+import { loadCustomersParams } from "@/features/customers/hooks/use-customers-params";
 
-export default function CustomersPage() {
-  return (
-    <EmptyState
-      icon={<LucideUsers className="size-6" />}
-      title="Customers"
-      description="Coming soon."
-    />
-  );
+type CustomersPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function CustomersPage({
+  searchParams,
+}: CustomersPageProps) {
+  const params = await loadCustomersParams.parse(searchParams);
+
+  return <CustomersFeature searchParams={params} />;
 }

@@ -1,12 +1,13 @@
-import { LucideUsers } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import CustomerDetailFeature from "@/features/customers/customer-detail-feature";
 
-export default function CustomerDetailPage() {
-  return (
-    <EmptyState
-      icon={<LucideUsers className="size-6" />}
-      title="Customer detail"
-      description="Coming soon."
-    />
-  );
+type CustomerDetailPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function CustomerDetailPage({
+  params,
+}: CustomerDetailPageProps) {
+  const { id } = await params;
+
+  return <CustomerDetailFeature customerId={id} />;
 }

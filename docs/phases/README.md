@@ -11,7 +11,7 @@ Build order for the admin dashboard. Phases 2–7 each ship one vertical feature
 | [3 — Products](./phase-3-products.md) | Product list, form, gallery | ✅ done |
 | [4 — Orders](./phase-4-orders.md) | Order list, detail, status machine, mark-paid | ✅ done |
 | [5 — Coupons & Shipping Zones](./phase-5-coupons-and-shipping.md) | Two small CRUD modules | ✅ done |
-| [6 — Customers & Staff Users](./phase-6-customers-and-staff.md) | People modules + guardrails | ⬜ not started |
+| [6 — Customers & Staff Users](./phase-6-customers-and-staff.md) | People modules + guardrails | 🟨 in progress |
 | [7 — Dashboard & Analytics](./phase-7-dashboard-and-analytics.md) | ADMIN KPI/chart screens (recharts) | ⬜ not started |
 | [8 — Hardening](./phase-8-hardening.md) | States, a11y, responsive, QA sweep | ⬜ not started |
 
