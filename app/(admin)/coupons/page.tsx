@@ -1,12 +1,14 @@
-import { LucideTicket } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import CouponsFeature from "@/features/coupons";
+import { loadCouponsParams } from "@/features/coupons/hooks/use-coupons-params";
 
-export default function CouponsPage() {
-  return (
-    <EmptyState
-      icon={<LucideTicket className="size-6" />}
-      title="Coupons"
-      description="Coming soon."
-    />
-  );
+type CouponsPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function CouponsPage({
+  searchParams,
+}: CouponsPageProps) {
+  const params = await loadCouponsParams.parse(searchParams);
+
+  return <CouponsFeature searchParams={params} />;
 }

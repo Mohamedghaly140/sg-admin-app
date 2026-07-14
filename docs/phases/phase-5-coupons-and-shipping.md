@@ -16,10 +16,10 @@ Phase 1 (independent of 3/4 — reorder freely).
 
 ### 1. `features/coupons/` (`/coupons`)
 
-- [ ] `hooks/use-coupons-params.ts` — `search`, `status` (lifecycle), `page`, `limit`.
-- [ ] Table with lifecycle badge computed by the API's exact semantics (active/expired/exhausted/deactivated), usage progress bar (`maxUsage 0` → ∞), `perUserLimit`.
-- [ ] Actions: `create-coupon` (uppercase-normalized code `^[A-Z0-9_-]{3,30}$`, discount 1–70, `maxUsage`/`perUserLimit` 0 = unlimited, future `expire`), `update-coupon` (past `expire` allowed = "expire now"), `deactivate-coupon` (**no reactivate exists — no re-enable toggle**), `delete-coupon`.
-- [ ] Errors: `409 DUPLICATE_RESOURCE` on code; `409 COUPON_IN_USE` on delete → toast offering "Deactivate instead".
+- [x] `hooks/use-coupons-params.ts` — `search`, `status` (lifecycle), `page`, `limit`.
+- [x] Table with lifecycle badge computed by the API's exact semantics (active/expired/exhausted/deactivated), usage progress bar (`maxUsage 0` → ∞), `perUserLimit`.
+- [x] Actions: `create-coupon` (uppercase-normalized code `^[A-Z0-9_-]{3,30}$`, discount 1–70, `maxUsage`/`perUserLimit` 0 = unlimited, future `expire`), `update-coupon` (past `expire` allowed = "expire now"), `deactivate-coupon` (**no reactivate exists — no re-enable toggle**), `delete-coupon`.
+- [x] Errors: `409 DUPLICATE_RESOURCE` on code; `409 COUPON_IN_USE` on delete → toast offering "Deactivate instead".
 
 ### 2. `features/shipping-zones/` (`/shipping-zones`)
 
