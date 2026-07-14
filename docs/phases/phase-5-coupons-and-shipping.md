@@ -23,15 +23,15 @@ Phase 1 (independent of 3/4 — reorder freely).
 
 ### 2. `features/shipping-zones/` (`/shipping-zones`)
 
-- [ ] `hooks/use-shipping-zones-params.ts` — `search`, `page`, `limit`.
-- [ ] Table: country / governorate / city (`null` → "All cities (governorate-wide)") / fee (formatEGP) / active badge.
-- [ ] Actions: `create-shipping-zone`, `update-shipping-zone` (incl. `isActive` toggle), `delete-shipping-zone` (confirm warns the area becomes un-checkout-able).
-- [ ] Errors: `409 DUPLICATE_RESOURCE` on the `(country, governorate, city)` combination.
+- [x] `hooks/use-shipping-zones-params.ts` — `search`, `page`, `limit`.
+- [x] Table: country / governorate / city (`null` → "All cities (governorate-wide)") / fee (formatEGP) / active toggle (inline `Switch`, replaces a static badge) / updated date.
+- [x] Actions: `create-shipping-zone`, `update-shipping-zone` (dialog `isActive` toggle), `set-shipping-zone-active` (inline row toggle), `delete-shipping-zone` (confirm warns the area becomes un-checkout-able).
+- [x] Errors: `409 DUPLICATE_RESOURCE` on the `(country, governorate, city)` combination.
 
 ## Acceptance criteria
 
-- [ ] Deactivated coupon stays visible with the Deactivated badge; no re-enable control anywhere.
-- [ ] Deleting a redeemed coupon shows the specific conflict message + deactivate suggestion.
-- [ ] Coupon codes display uppercased after create regardless of input case.
-- [ ] Zone fees render as EGP strings, no float math; governorate-wide rows are labeled.
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] Deactivated coupon stays visible with the Deactivated badge; no re-enable control anywhere.
+- [x] Deleting a redeemed coupon shows the specific conflict message + deactivate suggestion.
+- [x] Coupon codes display uppercased after create regardless of input case.
+- [x] Zone fees render as EGP strings, no float math; governorate-wide rows are labeled.
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.

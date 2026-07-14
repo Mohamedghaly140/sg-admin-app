@@ -1,12 +1,14 @@
-import { LucideTruck } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import ShippingZonesFeature from "@/features/shipping-zones";
+import { loadShippingZonesParams } from "@/features/shipping-zones/hooks/use-shipping-zones-params";
 
-export default function ShippingZonesPage() {
-  return (
-    <EmptyState
-      icon={<LucideTruck className="size-6" />}
-      title="Shipping zones"
-      description="Coming soon."
-    />
-  );
+type ShippingZonesPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function ShippingZonesPage({
+  searchParams,
+}: ShippingZonesPageProps) {
+  const params = await loadShippingZonesParams.parse(searchParams);
+
+  return <ShippingZonesFeature searchParams={params} />;
 }
