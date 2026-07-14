@@ -17,7 +17,7 @@ function toSearchParams(params: CouponsParams): string {
     limit: String(params.limit),
   });
 
-  const search = params.search.trim();
+  const search = params.search.trim().slice(0, 30); // contract: search ≤ 30
   if (search) {
     searchParams.set("search", search);
   }

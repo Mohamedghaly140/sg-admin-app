@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import { toast } from "sonner";
 
 import { Switch } from "@/components/ui/switch";
@@ -18,15 +18,17 @@ export function ShippingZoneActiveToggle({
   isActive,
   label,
 }: ShippingZoneActiveToggleProps) {
-  const [optimistic, setOptimistic] = useState(isActive);
+  const [optimistic, setOptimistic] = useOptimistic(isActive);
   const [isPending, startTransition] = useTransition();
 
   function handleCheckedChange(nextChecked: boolean) {
-    setOptimistic(nextChecked);
     startTransition(async () => {
+      // useOptimistic auto-reverts to the server prop when the transition ends,
+      // so a failed toggle (no revalidate) restores the real state — no manual
+      // rollback needed.
+      setOptimistic(nextChecked);
       const result = await setShippingZoneActive(id, nextChecked);
       if (result.status !== "SUCCESS") {
-        setOptimistic(!nextChecked);
         toast.error(result.message);
       }
     });

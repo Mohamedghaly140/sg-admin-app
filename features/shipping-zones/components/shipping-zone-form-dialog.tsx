@@ -4,7 +4,6 @@ import { LucidePencil, LucidePlus } from "lucide-react";
 import { useState, type ReactElement } from "react";
 import { toast } from "sonner";
 
-import FieldError from "@/components/shared/form/field-error";
 import Form from "@/components/shared/form/form";
 import {
   EMPTY_ACTION_STATE,
@@ -139,7 +138,6 @@ export function ShippingZoneFormDialog({
               defaultChecked={zone?.isActive ?? true}
             />
           </div>
-          <FieldError name="isActive" actionState={actionState} />
 
           <DialogFooter>
             <SubmitButton

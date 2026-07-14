@@ -17,7 +17,7 @@ function toSearchParams(params: ShippingZonesParams): string {
     limit: String(params.limit),
   });
 
-  const search = params.search.trim();
+  const search = params.search.trim().slice(0, 100); // contract: search ≤ 100
   if (search) {
     searchParams.set("search", search);
   }
