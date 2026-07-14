@@ -11,22 +11,11 @@ import {
 } from "@/components/ui/table";
 import { formatDate, formatEGP } from "@/lib/format";
 
-import type { Order, OrderStatus } from "../types";
+import type { Order } from "../types";
+import { OrderStatusBadge } from "./order-status-badge";
 
 type OrdersTableProps = {
   orders: Order[];
-};
-
-const statusVariants: Record<
-  OrderStatus,
-  "outline" | "default" | "secondary" | "destructive"
-> = {
-  PENDING: "outline",
-  PROCESSING: "secondary",
-  SHIPPED: "secondary",
-  DELIVERED: "default",
-  CANCELLED: "destructive",
-  REFUNDED: "outline",
 };
 
 export function OrdersTable({ orders }: OrdersTableProps) {
@@ -58,9 +47,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
               </TableCell>
               <TableCell>{order.customerName}</TableCell>
               <TableCell>
-                <Badge variant={statusVariants[order.status]}>
-                  {order.status}
-                </Badge>
+                <OrderStatusBadge status={order.status} />
               </TableCell>
               <TableCell>{order.paymentMethod}</TableCell>
               <TableCell>
