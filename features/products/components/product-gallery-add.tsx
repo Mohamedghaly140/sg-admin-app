@@ -136,7 +136,7 @@ export function ProductGalleryAdd({
         <Button
           type="button"
           onClick={handleAdd}
-          disabled={isDisabled || !hasPendingFile}
+          disabled={isDisabled || (!hasPendingFile && state.status !== "success")}
         >
           <LucidePlus aria-hidden="true" />
           Add to gallery
