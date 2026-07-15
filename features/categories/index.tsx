@@ -41,6 +41,7 @@ export default async function CategoriesFeature({
   redirectToLastPageIfOutOfRange(meta, (page) =>
     buildCategoriesHref({ ...searchParams, page }),
   );
+  const hasFilters = Boolean(searchParams.search.trim());
 
   const newCategoryTrigger = (
     <Button type="button">
@@ -77,12 +78,12 @@ export default async function CategoriesFeature({
           <EmptyState
             icon={<LucideFolderOpen className="size-5" aria-hidden="true" />}
             title={
-              searchParams.search
+              hasFilters
                 ? "No categories match your search"
                 : "No categories found"
             }
             description={
-              searchParams.search
+              hasFilters
                 ? "Try a different name or slug."
                 : "Categories will appear here after they are created."
             }

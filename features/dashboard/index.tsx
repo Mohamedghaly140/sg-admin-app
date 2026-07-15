@@ -1,6 +1,6 @@
 import { handleAuthError } from "@/lib/api/handle-auth-error";
 
-import { DashboardRefreshButton } from "./components/dashboard-refresh-button";
+import { DashboardMetrics } from "./components/dashboard-metrics";
 import { KpiCards } from "./components/kpi-cards";
 import { LowStockList } from "./components/low-stock-list";
 import { OrdersStatusChart } from "./components/orders-status-chart";
@@ -27,17 +27,10 @@ export default async function DashboardFeature() {
   const asOf = new Date().toISOString().slice(0, 10);
 
   return (
-    <section className="flex flex-col gap-4">
-      <header className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-base font-medium">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
-            Store performance, recent activity, and inventory at a glance.
-          </p>
-        </div>
-        <DashboardRefreshButton />
-      </header>
-
+    <DashboardMetrics
+      title="Dashboard"
+      subtitle="Store performance, recent activity, and inventory at a glance."
+    >
       <KpiCards
         revenue={metrics.revenue}
         orders={metrics.orders}
@@ -61,6 +54,6 @@ export default async function DashboardFeature() {
       </div>
 
       <LowStockList products={metrics.lowStockProducts} />
-    </section>
+    </DashboardMetrics>
   );
 }

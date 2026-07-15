@@ -1,21 +1,36 @@
 "use client";
 
-import { LucideRefreshCw } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { LucideLoader2, LucideRefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-export function DashboardRefreshButton() {
-  const router = useRouter();
+type DashboardRefreshButtonProps = {
+  isPending: boolean;
+  onRefresh: () => void;
+};
 
-  function handleRefresh() {
-    router.refresh();
-  }
-
+export function DashboardRefreshButton({
+  isPending,
+  onRefresh,
+}: DashboardRefreshButtonProps) {
   return (
-    <Button type="button" variant="outline" size="sm" onClick={handleRefresh}>
-      <LucideRefreshCw data-icon="inline-start" aria-hidden="true" />
-      Refresh
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      disabled={isPending}
+      onClick={onRefresh}
+    >
+      {isPending ? (
+        <LucideLoader2
+          data-icon="inline-start"
+          className="animate-spin"
+          aria-hidden="true"
+        />
+      ) : (
+        <LucideRefreshCw data-icon="inline-start" aria-hidden="true" />
+      )}
+      {isPending ? "Updating..." : "Refresh"}
     </Button>
   );
 }
