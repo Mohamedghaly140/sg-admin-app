@@ -24,16 +24,16 @@ Phase 1 (middleware already gates these routes). Building after 2–6 is deliber
 
 ### 2. `features/analytics/` (`/analytics`)
 
-- [ ] `hooks/use-analytics-params.ts` — `from`, `to` (`YYYY-MM-DD`), `tab`. Preset buttons write concrete dates (no `range` param — the API has none).
-- [ ] One query per tab (sales / products / customers / coupons / geography); only the active tab fetches.
-- [ ] Axis labels formatted by the echoed `grouping` (day/week/month).
-- [ ] Charts + tables per the screen spec; the paid-vs-all asymmetry is rendered as-is (never "corrected").
-- [ ] `EmptyState` per chart for empty ranges; per-tab skeletons.
+- [x] `hooks/use-analytics-params.ts` — `from`, `to` (`YYYY-MM-DD`), `tab`. Preset buttons write concrete dates (no `range` param — the API has none).
+- [x] One query per tab (sales / products / customers / coupons / geography); only the active tab fetches.
+- [x] Axis labels formatted by the echoed `grouping` (day/week/month).
+- [x] Charts + tables per the screen spec; the paid-vs-all asymmetry is rendered as-is (never "corrected").
+- [x] `EmptyState` per chart for empty ranges; per-tab skeletons.
 
 ## Acceptance criteria
 
-- [ ] MANAGER never sees these routes (nav + redirect) — regression-check phase 1 gating.
-- [ ] Date-range changes are URL-shareable and re-fetch server-side.
-- [ ] Charts use `--chart-*` CSS variables and `formatEGP` axes; both themes look right.
-- [ ] Zero-data ranges render empty states, not broken axes; `previous = 0` KPI shows "—".
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] MANAGER never sees these routes (nav + redirect) — regression-check phase 1 gating.
+- [x] Date-range changes are URL-shareable and re-fetch server-side.
+- [x] Charts use `--chart-*` CSS variables and `formatEGP` axes; both themes look right.
+- [x] Zero-data ranges render empty states, not broken axes; `previous = 0` KPI shows "—".
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.

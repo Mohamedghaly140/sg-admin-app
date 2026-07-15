@@ -12,7 +12,7 @@ Build order for the admin dashboard. Phases 2–7 each ship one vertical feature
 | [4 — Orders](./phase-4-orders.md) | Order list, detail, status machine, mark-paid | ✅ done |
 | [5 — Coupons & Shipping Zones](./phase-5-coupons-and-shipping.md) | Two small CRUD modules | ✅ done |
 | [6 — Customers & Staff Users](./phase-6-customers-and-staff.md) | People modules + guardrails | ✅ done |
-| [7 — Dashboard & Analytics](./phase-7-dashboard-and-analytics.md) | ADMIN KPI/chart screens (recharts) | 🟨 in progress |
+| [7 — Dashboard & Analytics](./phase-7-dashboard-and-analytics.md) | ADMIN KPI/chart screens (recharts) | ✅ done |
 | [8 — Hardening](./phase-8-hardening.md) | States, a11y, responsive, QA sweep | ⬜ not started |
 
 Statuses: ⬜ not started · 🟨 in progress · ✅ done. A phase is **done** only when every acceptance criterion passes and this table is updated. Update the row when starting a phase too.

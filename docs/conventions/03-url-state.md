@@ -57,6 +57,6 @@ setParams({ status: next, page: 1 });
 | Shipping zones | `search`, `page`, `limit` | [§07](../integration/admin/07-shipping-zones.md) |
 | Customers | `search`, `active`, `page`, `limit` | [§08](../integration/admin/08-customers.md) |
 | Staff users | `search`, `role`, `active`, `page`, `limit` | [§09](../integration/admin/09-staff-users.md) |
-| Analytics | `from`, `to` (`YYYY-MM-DD` — no range presets; the server derives grouping) | [§02](../integration/admin/02-analytics.md) |
+| Analytics | `from`, `to` (`YYYY-MM-DD` — no API range preset; the server derives grouping), `tab` (UI-only; not sent to the API) | [§02](../integration/admin/02-analytics.md) |
 
 If a param above disagrees with the feature's `integration/admin/` doc, the API doc wins — update this table.

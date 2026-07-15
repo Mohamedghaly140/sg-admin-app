@@ -1,12 +1,14 @@
-import { LucideBarChart3 } from "lucide-react";
-import { EmptyState } from "@/components/shared/empty-state";
+import AnalyticsFeature from "@/features/analytics";
+import { loadAnalyticsParams } from "@/features/analytics/hooks/use-analytics-params";
 
-export default function AnalyticsPage() {
-  return (
-    <EmptyState
-      icon={<LucideBarChart3 className="size-6" />}
-      title="Analytics"
-      description="Coming soon."
-    />
-  );
+type AnalyticsPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function AnalyticsPage({
+  searchParams,
+}: AnalyticsPageProps) {
+  const params = await loadAnalyticsParams.parse(searchParams);
+
+  return <AnalyticsFeature params={params} />;
 }
