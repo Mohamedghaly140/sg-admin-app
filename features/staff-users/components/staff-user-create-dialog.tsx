@@ -95,16 +95,26 @@ export function StaffUserCreateDialog() {
           actionState={actionState}
           suppressBuiltInToasts
         >
-          <FormControl
-            label="Name"
-            name="name"
-            required
-            minLength={2}
-            maxLength={120}
-            autoComplete="name"
-            defaultValue={actionState.payload?.name}
-            actionState={actionState}
-          />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormControl
+              label="First name"
+              name="firstName"
+              required
+              maxLength={120}
+              autoComplete="given-name"
+              defaultValue={actionState.payload?.firstName}
+              actionState={actionState}
+            />
+            <FormControl
+              label="Last name"
+              name="lastName"
+              required
+              maxLength={120}
+              autoComplete="family-name"
+              defaultValue={actionState.payload?.lastName}
+              actionState={actionState}
+            />
+          </div>
           <FormControl
             label="Email"
             name="email"
