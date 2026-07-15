@@ -11,7 +11,10 @@ export const createUserSchema = z
     password: z.string().min(8),
     role: z.enum(ROLES),
   })
-  .refine((v) => `${v.firstName} ${v.lastName}`.length <= 120, {
+  // Count code points, not UTF-16 units, to match the backend's
+  // surrogate-pair-aware length check (validator.js isLength) — otherwise
+  // valid non-BMP names (e.g. 𠮷) are wrongly rejected before apiFetch.
+  .refine((v) => [...`${v.firstName} ${v.lastName}`].length <= 120, {
     path: ["lastName"],
     message: "Full name must be 120 characters or fewer",
   });

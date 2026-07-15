@@ -100,7 +100,6 @@ export function StaffUserCreateDialog() {
               label="First name"
               name="firstName"
               required
-              maxLength={120}
               autoComplete="given-name"
               defaultValue={actionState.payload?.firstName}
               actionState={actionState}
@@ -109,7 +108,6 @@ export function StaffUserCreateDialog() {
               label="Last name"
               name="lastName"
               required
-              maxLength={120}
               autoComplete="family-name"
               defaultValue={actionState.payload?.lastName}
               actionState={actionState}
