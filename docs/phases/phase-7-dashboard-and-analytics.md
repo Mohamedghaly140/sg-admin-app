@@ -16,11 +16,11 @@ Phase 1 (middleware already gates these routes). Building after 2–6 is deliber
 
 ### 1. `features/dashboard/` (`/`)
 
-- [ ] `queries/get-dashboard-metrics.ts` — the single `GET /admin/dashboard/metrics` call.
-- [ ] KPI cards with % delta vs. previous month (**guard `previous = 0`**); quick-stat cards linking to filtered screens.
-- [ ] Revenue-by-day chart (fill missing days with 0) + orders-by-status chart (default absent statuses to 0).
-- [ ] Recent orders table ("Guest" fallback, links to detail), top products, low-stock list.
-- [ ] Skeleton `loading.tsx` matching the layout; optional manual refresh — **no polling < 60 s**.
+- [x] `queries/get-dashboard-metrics.ts` — the single `GET /admin/dashboard/metrics` call.
+- [x] KPI cards with % delta vs. previous month (**guard `previous = 0`**); quick-stat cards linking to filtered screens.
+- [x] Revenue-by-day chart (fill missing days with 0) + orders-by-status chart (default absent statuses to 0).
+- [x] Recent orders table ("Guest" fallback, links to detail), top products, low-stock list.
+- [x] Skeleton `loading.tsx` matching the layout; optional manual refresh — **no polling < 60 s**.
 
 ### 2. `features/analytics/` (`/analytics`)
 

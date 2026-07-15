@@ -33,6 +33,7 @@ lucide-react, always imported with the `Lucide` prefix: `LucideSearch`, `LucideT
 
 ## Charts (Recharts — dashboard & analytics only)
 
+- `ChartContainer` is the standard Recharts wrapper.
 - Colors come from the `--chart-1` … `--chart-5` CSS variables in `globals.css` — never hard-coded hex.
 - Money axes/tooltips format via `formatEGP()` from `lib/format.ts`. Dashboard/analytics endpoints return plain **numbers**, so values chart directly.
 - Wrap charts in a fixed-height container (Recharts' `ResponsiveContainer` needs one) and give each a loading `skeleton` of the same height to avoid layout shift.
