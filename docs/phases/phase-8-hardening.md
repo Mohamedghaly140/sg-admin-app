@@ -30,8 +30,8 @@ Phases 1–7.
 
 ### 4. Consistency sweep
 
-- [ ] All destructive actions behind `ConfirmDialog`; all money through `formatEGP`; all dates through the `lib/format.ts` helpers.
-- [ ] All Lucide imports use the `Lucide` prefix; no `Props`-named types; no `useState` URL state (grep-audit each).
+- [x] All destructive actions behind `ConfirmDialog`; all money through `formatEGP`; all dates through the `lib/format.ts` helpers.
+- [x] All Lucide imports use the `Lucide` prefix; no `Props`-named types; no `useState` URL state (grep-audit each).
 
 ### 5. Docs & QA
 

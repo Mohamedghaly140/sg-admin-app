@@ -19,6 +19,18 @@ const dateTimeFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
   timeZone: DEFAULT_TIME_ZONE,
 });
 
+const dayMonthFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+  month: "short",
+  day: "numeric",
+  timeZone: DEFAULT_TIME_ZONE,
+});
+
+const monthYearFormatter = new Intl.DateTimeFormat(DEFAULT_LOCALE, {
+  month: "short",
+  year: "numeric",
+  timeZone: DEFAULT_TIME_ZONE,
+});
+
 type CldCrop = "fill" | "fit" | "limit" | "scale" | "thumb";
 type CldFormat = "auto" | "jpg" | "jpeg" | "png" | "webp";
 
@@ -53,6 +65,16 @@ export function formatDate(value: string | Date): string {
 
 export function formatDateTime(value: string | Date): string {
   return dateTimeFormatter.format(toDate(value));
+}
+
+// Chart-axis labels for date-only buckets ("YYYY-MM-DD"). Formatted in a fixed
+// time zone so the calendar day is stable across client zones (no hydration drift).
+export function formatDayMonth(value: string | Date): string {
+  return dayMonthFormatter.format(toDate(value));
+}
+
+export function formatMonthYear(value: string | Date): string {
+  return monthYearFormatter.format(toDate(value));
 }
 
 export function cldUrl(

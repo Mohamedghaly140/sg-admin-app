@@ -1,5 +1,7 @@
 import { format, isValid, parseISO, subDays } from "date-fns";
 
+import { formatDayMonth, formatMonthYear } from "@/lib/format";
+
 import type { AnalyticsGrouping } from "./types";
 
 const DATE_PARAM_FORMAT = "yyyy-MM-dd";
@@ -22,11 +24,9 @@ export function formatGroupingAxisLabel(
   value: string,
   grouping: AnalyticsGrouping,
 ): string {
-  const date = parseISO(value);
-
-  if (!isValid(date)) {
+  if (!isValid(parseISO(value))) {
     return value;
   }
 
-  return format(date, grouping === "month" ? "MMM yyyy" : "MMM d");
+  return grouping === "month" ? formatMonthYear(value) : formatDayMonth(value);
 }

@@ -12,6 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { formatDate } from "@/lib/format";
 
 import { useOrdersParams } from "../hooks/use-orders-params";
 
@@ -98,17 +99,17 @@ function toDateRange(from: string, to: string): DateRange | undefined {
 }
 
 function formatDateRangeLabel(from: string, to: string): string {
-  const fromDate = parseDateOnly(from);
-  const toDate = parseDateOnly(to);
+  const hasFrom = Boolean(parseDateOnly(from));
+  const hasTo = Boolean(parseDateOnly(to));
 
-  if (fromDate && toDate) {
-    return `${format(fromDate, "MMM d, yyyy")} – ${format(toDate, "MMM d, yyyy")}`;
+  if (hasFrom && hasTo) {
+    return `${formatDate(from)} – ${formatDate(to)}`;
   }
-  if (fromDate) {
-    return `From ${format(fromDate, "MMM d, yyyy")}`;
+  if (hasFrom) {
+    return `From ${formatDate(from)}`;
   }
-  if (toDate) {
-    return `Until ${format(toDate, "MMM d, yyyy")}`;
+  if (hasTo) {
+    return `Until ${formatDate(to)}`;
   }
 
   return "Date range";

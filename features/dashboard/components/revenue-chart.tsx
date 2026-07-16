@@ -23,7 +23,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { formatDate, formatEGP } from "@/lib/format";
+import { formatDate, formatDayMonth, formatEGP } from "@/lib/format";
 
 import type { DashboardRevenueByDay } from "../types";
 
@@ -141,7 +141,7 @@ function fillRevenueGaps(
 }
 
 function formatChartDate(value: string): string {
-  return formatDate(value).replace(/,? \d{4}/, "");
+  return formatDayMonth(value);
 }
 
 function formatTooltipDate(value: ReactNode): ReactNode {
