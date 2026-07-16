@@ -43,3 +43,5 @@ Refunds with money movement · manual order creation · editing order contents �
 - [x] Guest orders render the full `anon*` contact + shipping snapshot correctly.
 - [x] All list filters are URL-shareable; empty vs. filtered-empty states differ.
 - [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+
+**Phase 4 signed off — 2026-07-17.** All acceptance criteria verified via Playwright against the live API across all three roles (ADMIN/MANAGER/USER), including the state machine over PENDING/PROCESSING/SHIPPED/DELIVERED, the Delivered-disabled-on-unpaid-CASH hint, mark-paid one-way guard, and the guest `anon*` panel. Full QA in [`docs/qa/phase-4-qa-report.md`](../qa/phase-4-qa-report.md).
