@@ -45,7 +45,7 @@ type ProductFormProps = {
   product?: ProductFormType;
   readOnly?: {
     sold: number;
-    ratingsAverage: string;
+    ratingsAverage: string | null;
     ratingsQuantity: number;
   };
 };
@@ -358,7 +358,11 @@ export function ProductForm({
                     <ReadOnlyField label="Sold" value={String(readOnly.sold)} />
                     <ReadOnlyField
                       label="Rating"
-                      value={`${readOnly.ratingsAverage} (${readOnly.ratingsQuantity})`}
+                      value={
+                        readOnly.ratingsAverage
+                          ? `${readOnly.ratingsAverage} (${readOnly.ratingsQuantity})`
+                          : "No ratings yet"
+                      }
                     />
                   </>
                 ) : null}

@@ -28,7 +28,7 @@ export type ProductDetail = {
   price: string;
   discount: string;
   priceAfterDiscount: string;
-  ratingsAverage: string;
+  ratingsAverage: string | null;
   ratingsQuantity: number;
   featured: boolean;
   sizes: string[];
