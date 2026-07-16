@@ -17,10 +17,10 @@ Phases 1–7.
 
 ### 2. Auth consistency
 
-- [ ] `401 UNAUTHENTICATED` → sign-in redirect from both reads and actions.
-- [ ] `403 FORBIDDEN` → access-denied screen (reads) / permission toast (actions).
-- [ ] `403 ACCOUNT_DISABLED` → Clerk sign-out + notice.
-- [ ] Verify no Clerk token or `API_URL` ever reaches a Client Component (grep the client bundle boundaries).
+- [x] `401 UNAUTHENTICATED` → sign-in redirect from both reads and actions.
+- [x] `403 FORBIDDEN` → access-denied screen (reads) / permission toast (actions).
+- [x] `403 ACCOUNT_DISABLED` → Clerk sign-out + notice.
+- [x] Verify no Clerk token or `API_URL` ever reaches a Client Component (grep the client bundle boundaries).
 
 ### 3. Responsive & a11y
 

@@ -1,6 +1,7 @@
 import "server-only";
 import { notFound, redirect } from "next/navigation";
 import { ApiError } from "./api-error";
+import { redirectOnAuthError } from "./redirect-on-auth-error";
 
 /**
  * Central mapping for read-path ApiError codes — call from queries or pages,
@@ -12,13 +13,11 @@ export function handleAuthError(error: unknown): never {
     throw error;
   }
 
+  redirectOnAuthError(error);
+
   switch (error.code) {
     case "RESOURCE_NOT_FOUND":
       notFound();
-    case "UNAUTHENTICATED":
-      redirect("/sign-in");
-    case "ACCOUNT_DISABLED":
-      redirect("/account-disabled");
     case "FORBIDDEN":
       redirect("/access-denied");
     default:

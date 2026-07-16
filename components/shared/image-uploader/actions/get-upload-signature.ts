@@ -1,9 +1,8 @@
 "use server";
 
-import { redirect } from "next/navigation";
-
 import { ApiError } from "@/lib/api/api-error";
 import { apiFetch } from "@/lib/api/http";
+import { redirectOnAuthError } from "@/lib/api/redirect-on-auth-error";
 
 import { uploadSignatureSchema } from "../schema/upload-signature-schema";
 import type { UploadSignature, UploadSignatureResult } from "../types";
@@ -27,14 +26,15 @@ export async function getUploadSignature(
     return { ok: true, data };
   } catch (error) {
     if (error instanceof ApiError) {
-      if (error.code === "UNAUTHENTICATED") {
-        redirect("/sign-in");
-      }
-      if (error.code === "ACCOUNT_DISABLED") {
-        redirect("/account-disabled");
-      }
+      redirectOnAuthError(error);
 
-      return { ok: false, message: error.message };
+      return {
+        ok: false,
+        message:
+          error.code === "FORBIDDEN"
+            ? "You don't have permission to do this."
+            : error.message,
+      };
     }
 
     return { ok: false, message: GENERIC_UPLOAD_PREP_ERROR };

@@ -1,7 +1,7 @@
 import { isClerkAPIResponseError } from "@clerk/nextjs/errors";
-import { redirect } from "next/navigation";
 import { ZodError } from "zod";
 import { ApiError } from "@/lib/api/api-error";
+import { redirectOnAuthError } from "@/lib/api/redirect-on-auth-error";
 
 export type ActionState = {
   status?: "SUCCESS" | "ERROR";
@@ -63,12 +63,7 @@ export const fromErrorToActionState = (
   }
   if (error instanceof ApiError) {
     // Branch on `code`, never on `status` or `message` — two distinct 403s exist.
-    if (error.code === "UNAUTHENTICATED") {
-      redirect("/sign-in");
-    }
-    if (error.code === "ACCOUNT_DISABLED") {
-      redirect("/account-disabled");
-    }
+    redirectOnAuthError(error);
 
     const apiResponse = { code: error.code, status: error.status, ...response };
 

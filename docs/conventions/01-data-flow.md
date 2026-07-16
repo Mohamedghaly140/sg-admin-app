@@ -110,6 +110,8 @@ never by matching message text. Do not wrap the action call in a client-side
 
 Phase 1 extends `components/shared/form/utils/to-action-state.ts` with an `ApiError` branch (the commented-out `AxiosError` block marks the slot):
 
+`redirectOnAuthError` (`lib/api/redirect-on-auth-error.ts`) is the shared hard-redirect helper reused by `handleAuthError` and `fromErrorToActionState`: `UNAUTHENTICATED` → `/sign-in`, `ACCOUNT_DISABLED` → `/account-disabled`.
+
 - **`code === "VALIDATION_ERROR"` with `errors[]`** → group into `fieldErrors: Record<string, string[]>` (`{ field, message }[]` → `{ [field]: [messages] }`) and keep `message` so the toast still fires. Backend 422s then render in `FieldError` exactly like Zod failures — one UI path.
 - **409 family** (`DUPLICATE_RESOURCE`, `FOREIGN_KEY_CONSTRAINT`, `INVALID_STATUS_TRANSITION`, `LAST_ADMIN_REQUIRED`, `SELF_MODIFICATION_FORBIDDEN`, `FORBIDDEN_TARGET`, `COUPON_IN_USE`) → the API's `message` is human-readable; it becomes the error toast. Actions may pre-map specific codes to friendlier copy before returning. Stash `code`/`status` in `ActionState.response` when a caller needs to branch.
 - **`401 UNAUTHENTICATED`** → `redirect("/sign-in")` (a thrown redirect, not an ActionState).
