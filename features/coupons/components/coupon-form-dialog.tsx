@@ -49,6 +49,9 @@ export function CouponFormDialog({
       setUncontrolledOpen(nextOpen);
     }
     onOpenChange?.(nextOpen);
+    if (!nextOpen) {
+      setActionState(EMPTY_ACTION_STATE);
+    }
   }
 
   async function handleAction(formData: FormData) {

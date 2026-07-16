@@ -1,10 +1,14 @@
 "use client";
 
 import { LucideImagePlus, LucidePencil } from "lucide-react";
-import { useActionState, useRef, useState, type ReactElement } from "react";
+import { useRef, useState, type ReactElement } from "react";
+import { toast } from "sonner";
 
 import Form from "@/components/shared/form/form";
-import { EMPTY_ACTION_STATE } from "@/components/shared/form/utils/to-action-state";
+import {
+  EMPTY_ACTION_STATE,
+  type ActionState,
+} from "@/components/shared/form/utils/to-action-state";
 import FormControl from "@/components/shared/form-control";
 import ImageUploader from "@/components/shared/image-uploader";
 import type { ImageUploaderHandle } from "@/components/shared/image-uploader/types";
@@ -37,17 +41,18 @@ export function CategoryFormDialog({
   const formAction = category
     ? updateCategory.bind(null, category.id)
     : createCategory;
-  const [actionState, action] = useActionState(
-    formAction,
-    EMPTY_ACTION_STATE,
-  );
+  const [actionState, setActionState] =
+    useState<ActionState>(EMPTY_ACTION_STATE);
   const isEditing = Boolean(category);
 
-  function handleSuccess() {
-    setOpen(false);
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setActionState(EMPTY_ACTION_STATE);
+    }
   }
 
-  async function handleSubmit(formData: FormData) {
+  async function handleAction(formData: FormData) {
     const result = await uploaderRef.current?.uploadPendingFile();
     if (result?.ok === false) {
       return;
@@ -56,11 +61,20 @@ export function CategoryFormDialog({
       formData.set("imageId", result.image.imageId);
       formData.set("imageUrl", result.image.imageUrl);
     }
-    action(formData);
+    const nextState = await formAction(EMPTY_ACTION_STATE, formData);
+
+    if (nextState.status === "SUCCESS") {
+      toast.success(nextState.message);
+      handleOpenChange(false);
+      return;
+    }
+
+    setActionState(nextState);
+    if (nextState.message) toast.error(nextState.message);
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={trigger} />
       <DialogContent>
         <DialogHeader>
@@ -75,9 +89,9 @@ export function CategoryFormDialog({
         </DialogHeader>
 
         <Form
-          action={handleSubmit}
+          action={handleAction}
           actionState={actionState}
-          onSuccess={handleSuccess}
+          suppressBuiltInToasts
         >
           <FormControl
             label="Name"

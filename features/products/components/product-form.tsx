@@ -1,11 +1,14 @@
 "use client";
 
 import { LucidePackagePlus, LucideSave } from "lucide-react";
-import { useActionState, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import FieldError from "@/components/shared/form/field-error";
 import Form from "@/components/shared/form/form";
-import { EMPTY_ACTION_STATE } from "@/components/shared/form/utils/to-action-state";
+import {
+  EMPTY_ACTION_STATE,
+  type ActionState,
+} from "@/components/shared/form/utils/to-action-state";
 import FormControl from "@/components/shared/form-control";
 import ImageUploader from "@/components/shared/image-uploader";
 import type { ImageUploaderHandle } from "@/components/shared/image-uploader/types";
@@ -56,17 +59,15 @@ export function ProductForm({
   const formAction = product
     ? updateProduct.bind(null, product.id)
     : createProduct;
-  const [actionState, action] = useActionState(
-    formAction,
-    EMPTY_ACTION_STATE,
-  );
+  const [actionState, setActionState] =
+    useState<ActionState>(EMPTY_ACTION_STATE);
   const [categoryId, setCategoryId] = useState(
     getPayloadValue(actionState.payload?.categoryId) ?? product?.categoryId ?? "",
   );
   const isEditing = Boolean(product);
   const featured = getFeaturedDefault(actionState.payload?.featured, product);
 
-  async function handleSubmit(submittedFormData: FormData) {
+  async function handleAction(submittedFormData: FormData) {
     const result = await uploaderRef.current?.uploadPendingFile();
     if (result?.ok === false) {
       return;
@@ -75,7 +76,11 @@ export function ProductForm({
       submittedFormData.set("imageId", result.image.imageId);
       submittedFormData.set("imageUrl", result.image.imageUrl);
     }
-    action(submittedFormData);
+    const nextState = await formAction(
+      EMPTY_ACTION_STATE,
+      submittedFormData,
+    );
+    setActionState(nextState);
   }
 
   function handleCategoryChange(value: unknown) {
@@ -83,7 +88,7 @@ export function ProductForm({
   }
 
   return (
-    <Form action={handleSubmit} actionState={actionState} className="gap-6">
+    <Form action={handleAction} actionState={actionState} className="gap-6">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="flex flex-col gap-4">
           <Card>

@@ -1,8 +1,8 @@
-import { UserButton } from "@clerk/nextjs";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Breadcrumbs } from "@/components/shared/app-shell/breadcrumbs";
 import { ThemeToggle } from "@/components/shared/app-shell/theme-toggle";
+import { UserButton } from "@/components/shared/app-shell/user-button";
 
 export function Topbar() {
   return (

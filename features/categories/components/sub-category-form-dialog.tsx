@@ -1,11 +1,15 @@
 "use client";
 
 import { LucidePencil, LucidePlus } from "lucide-react";
-import { useActionState, useState, type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
+import { toast } from "sonner";
 
 import FieldError from "@/components/shared/form/field-error";
 import Form from "@/components/shared/form/form";
-import { EMPTY_ACTION_STATE } from "@/components/shared/form/utils/to-action-state";
+import {
+  EMPTY_ACTION_STATE,
+  type ActionState,
+} from "@/components/shared/form/utils/to-action-state";
 import FormControl from "@/components/shared/form-control";
 import SubmitButton from "@/components/shared/submit-button";
 import {
@@ -49,22 +53,36 @@ export function SubCategoryFormDialog({
   const formAction = subCategory
     ? updateSubCategory.bind(null, subCategory.id)
     : createSubCategory;
-  const [actionState, action] = useActionState(
-    formAction,
-    EMPTY_ACTION_STATE,
-  );
+  const [actionState, setActionState] =
+    useState<ActionState>(EMPTY_ACTION_STATE);
   const isEditing = Boolean(subCategory);
   const selectItems = categoryOptions.map(({ id, name }) => ({
     label: name,
     value: id,
   }));
 
-  function handleSuccess() {
-    setOpen(false);
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen);
+    if (!nextOpen) {
+      setActionState(EMPTY_ACTION_STATE);
+    }
+  }
+
+  async function handleAction(formData: FormData) {
+    const result = await formAction(EMPTY_ACTION_STATE, formData);
+
+    if (result.status === "SUCCESS") {
+      toast.success(result.message);
+      handleOpenChange(false);
+      return;
+    }
+
+    setActionState(result);
+    if (result.message) toast.error(result.message);
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={trigger} />
       <DialogContent>
         <DialogHeader>
@@ -79,9 +97,9 @@ export function SubCategoryFormDialog({
         </DialogHeader>
 
         <Form
-          action={action}
+          action={handleAction}
           actionState={actionState}
-          onSuccess={handleSuccess}
+          suppressBuiltInToasts
         >
           <FormControl
             label="Name"
