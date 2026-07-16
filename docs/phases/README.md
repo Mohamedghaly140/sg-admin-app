@@ -6,7 +6,7 @@ Build order for the admin dashboard. Phases 2–7 each ship one vertical feature
 
 | Phase | Scope | Status |
 |---|---|---|
-| [1 — Foundation](./phase-1-foundation.md) | Providers, auth, API client, shell, primitives | 🟨 in progress |
+| [1 — Foundation](./phase-1-foundation.md) | Providers, auth, API client, shell, primitives | ✅ done |
 | [2 — Categories & Uploads](./phase-2-categories-and-uploads.md) | First CRUD loop + `ImageUploader` | 🟨 in progress |
 | [3 — Products](./phase-3-products.md) | Product list, form, gallery | ✅ done |
 | [4 — Orders](./phase-4-orders.md) | Order list, detail, status machine, mark-paid | ✅ done |

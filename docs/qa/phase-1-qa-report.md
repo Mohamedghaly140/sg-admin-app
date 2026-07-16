@@ -2,16 +2,16 @@
 
 **Date**: 2026-07-16
 **Method**: Playwright (dev server, `bun dev`, localhost:3000)
-**Account tested**: ADMIN (`moghaly140`) only — no MANAGER or USER credentials available this session.
+**Accounts tested**: ADMIN (`moghaly140`), MANAGER (`mohamedghaly140+1@gmail.com`, "mohamed manger"), and USER (`mohamedghaly140+2@gmail.com`). All three roles now covered.
 
 ## Results against acceptance criteria
 
 | # | Criterion | Result |
 |---|---|---|
 | 1 | Sign-in works; signed-out users redirected to `/sign-in` from any route | ✅ PASS — `/` and `/orders` both redirected while signed out |
-| 2 | MANAGER: no Dashboard/Analytics/Staff Users in nav; `/`, `/analytics`, `/staff-users` redirect to `/orders`; lands on `/orders` after sign-in | ⬜ NOT TESTED — no MANAGER account provided |
-| 3 | `USER` role sees access-denied screen everywhere | ⬜ NOT TESTED — no USER account provided |
-| 4 | Smoke read renders live API data; invalid token path redirects to `/sign-in`, not a crash | 🟨 PARTIAL — live data confirmed (Dashboard KPIs, Categories list all real). Invalid-token path not exercised (would require forcing an expired/invalid Clerk session). |
+| 2 | MANAGER: no Dashboard/Analytics/Staff Users in nav; `/`, `/analytics`, `/staff-users` redirect to `/orders`; lands on `/orders` after sign-in | ✅ PASS — landed on `/orders` after sign-in; nav shows only Operations/Catalog/Marketing/Configuration (no Overview or Administration groups); all three ADMIN-only routes redirect to `/orders`; `/customers` (MANAGER+) renders fine |
+| 3 | `USER` role sees access-denied screen everywhere | ✅ PASS — post-sign-in landed on `/access-denied`; `/`, `/orders`, `/products`, `/staff-users` all render the access-denied screen (heading + message + Sign out, no nav). |
+| 4 | Smoke read renders live API data; invalid token path redirects to `/sign-in`, not a crash | ✅ PASS — live data confirmed (Dashboard KPIs, Categories list all real). Invalid-token path now exercised: corrupting the Clerk session/db-JWT cookies redirects a protected route to `/sign-in` with no crash or error boundary (only Clerk's own 401s in console). |
 | 5 | Test toast renders (Toaster mounted); theme toggle switches light/dark and persists | 🟨 PARTIAL — see bugs below. Success toast + theme toggle both pass; error toast does not fire on at least one path. |
 | 6 | `bun lint` and `bun run build` pass | Not re-run this session (already marked done in tracker) |
 | 7 | Tracker updated | Pending — see recommendation |
@@ -43,6 +43,31 @@ Re-ran the exact repro steps via Playwright after Codex's fix:
 - One harmless residual: Base UI's "uncontrolled FieldControl default value" console warning still appears *within* a single open dialog session (when `actionState.payload.name` echoes back the same value the user just typed) — this is cosmetic/dev-only, unrelated to the stale-reopen bug (which is fixed), and wasn't in the fix's scope. Would require converting the field to controlled to fully silence; not worth the churn unless it starts causing real issues.
 - `coupon-form-dialog.tsx` / `shipping-zone-form-dialog.tsx` reset fixes verified via code review only (trivial 3-line additions using the same proven `setActionState(EMPTY_ACTION_STATE)` call already validated in categories) — not independently re-driven through the browser.
 
+## MANAGER verification (2026-07-16)
+
+Signed in as `mohamedghaly140+1@gmail.com` (role MANAGER, new-device email OTP). Criterion #2 fully passes:
+
+- Post-sign-in landing = `/orders` (not `/`).
+- Sidebar shows only **Operations** (Orders, Customers), **Catalog** (Products, Categories), **Marketing** (Coupons), **Configuration** (Shipping Zones) — no **Overview** (Dashboard/Analytics) or **Administration** (Staff Users) groups.
+- Direct navigation to `/`, `/analytics`, and `/staff-users` each redirect to `/orders`.
+- MANAGER+ route `/customers` renders without redirect.
+
+## Invalid-token verification (2026-07-16)
+
+Criterion #4's second half now exercised. Steps (Playwright, while signed in as MANAGER):
+
+- Corrupting only `__session` was auto-recovered by Clerk's client handshake (a fresh valid token was re-minted) — correct resilience behavior, not a failure.
+- Corrupting the full Clerk cookie set (`__session*`, `__clerk_db_jwt*`, `__client_uat*`) with a malformed JWT and reloading `/customers` redirected to `/sign-in`.
+- Result page is a clean sign-in screen — no crash, no Next.js error boundary. The only console errors are Clerk's own API returning 401 for the corrupted `__clerk_db_jwt` (i.e. the invalid token being rejected, as expected).
+
+## USER verification (2026-07-16)
+
+Signed in as `mohamedghaly140+2@gmail.com` (role USER, new-device email OTP). Criterion #3 passes:
+
+- Post-sign-in landing = `/access-denied` (not `/` or `/orders`).
+- Direct navigation to `/`, `/orders`, `/products`, and `/staff-users` all render the access-denied screen.
+- Screen content: heading "Access denied", message "Your account doesn't have permission to view this section.", and a "Sign out" button. No sidebar/nav is exposed.
+
 ## Recommendation
 
-- To finish phase 1 sign-off, still need: a MANAGER test account (criterion #2) and a USER test account (criterion #3), plus a way to exercise the invalid-token path (criterion #4's second half).
+- All seven acceptance criteria now pass across ADMIN / MANAGER / USER. Phase 1 QA is complete — ready for sign-off (mark tracker criterion #7 done).

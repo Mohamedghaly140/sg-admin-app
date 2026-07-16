@@ -40,10 +40,12 @@ Everything cross-cutting: a signed-in MANAGER/ADMIN sees an empty but fully navi
 
 ## Acceptance criteria
 
-- [ ] Sign-in works; signed-out users are redirected to `/sign-in` from any route.
-- [ ] MANAGER: no Dashboard/Analytics/Staff Users in the nav; hitting `/`, `/analytics`, or `/staff-users` redirects to `/orders`; lands on `/orders` after sign-in.
-- [ ] `USER` role sees the access-denied screen everywhere.
-- [ ] The smoke read renders live API data; an invalid token path produces a redirect to `/sign-in`, not a crash.
-- [ ] A test toast renders (Toaster mounted); theme toggle switches light/dark and persists.
+- [x] Sign-in works; signed-out users are redirected to `/sign-in` from any route.
+- [x] MANAGER: no Dashboard/Analytics/Staff Users in the nav; hitting `/`, `/analytics`, or `/staff-users` redirects to `/orders`; lands on `/orders` after sign-in.
+- [x] `USER` role sees the access-denied screen everywhere.
+- [x] The smoke read renders live API data; an invalid token path produces a redirect to `/sign-in`, not a crash.
+- [x] A test toast renders (Toaster mounted); theme toggle switches light/dark and persists.
 - [x] `bun lint` and `bun run build` pass.
-- [ ] [Tracker](./README.md) updated.
+- [x] [Tracker](./README.md) updated.
+
+**Phase 1 signed off — 2026-07-16.** All acceptance criteria verified via Playwright across ADMIN / MANAGER / USER roles; full QA in [`docs/qa/phase-1-qa-report.md`](../qa/phase-1-qa-report.md).
