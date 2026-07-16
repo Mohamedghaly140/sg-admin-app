@@ -32,7 +32,9 @@ export function ToggleProductFeaturedButton({
     startTransition(async () => {
       setOptimisticFeatured(nextFeatured);
       const actionState = await toggleProductFeatured(productId, nextFeatured);
-      if (actionState.status === "ERROR") {
+      if (actionState.status === "SUCCESS") {
+        toast.success(actionState.message);
+      } else if (actionState.status === "ERROR") {
         toast.error(actionState.message);
       }
     });
