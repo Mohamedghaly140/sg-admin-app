@@ -58,10 +58,16 @@ export function ProductSubCategoriesSelect({
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-sm font-medium">Sub-categories</span>
+      <span id="product-sub-categories-label" className="text-sm font-medium">
+        Sub-categories
+      </span>
       {categoryId ? (
         visibleSubCategories.length > 0 ? (
-          <div className="grid gap-2 rounded-md border p-3 sm:grid-cols-2">
+          <div
+            role="group"
+            aria-labelledby="product-sub-categories-label"
+            className="grid gap-2 rounded-md border p-3 sm:grid-cols-2"
+          >
             {visibleSubCategories.map((subCategory) => {
               const checkboxId = `sub-category-${subCategory.id}`;
               const checked = selectedIds.includes(subCategory.id);

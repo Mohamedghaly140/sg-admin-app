@@ -52,12 +52,19 @@ export function RevenueOverTimeChart({
     <Card className="xl:col-span-2">
       <CardHeader>
         <CardTitle>
-          <h2>Revenue over time</h2>
+          <h2 id="analytics-revenue-over-time-chart-title">
+            Revenue over time
+          </h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-72 w-full"
+            role="group"
+            aria-labelledby="analytics-revenue-over-time-chart-title"
+          >
             <AreaChart
               accessibilityLayer
               data={data}

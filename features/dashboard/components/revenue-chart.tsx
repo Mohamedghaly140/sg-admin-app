@@ -45,12 +45,17 @@ export function RevenueChart({ revenueByDay, asOf }: RevenueChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Revenue — last 30 days</h2>
+          <h2 id="dashboard-revenue-chart-title">Revenue — last 30 days</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {revenueByDay.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-72 w-full"
+            role="group"
+            aria-labelledby="dashboard-revenue-chart-title"
+          >
             <AreaChart
               accessibilityLayer
               data={fillRevenueGaps(revenueByDay, asOf)}

@@ -35,12 +35,19 @@ export function OrdersByStatusChart({ data }: OrdersByStatusChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Orders by status</h2>
+          <h2 id="analytics-orders-by-status-chart-title">
+            Orders by status
+          </h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-72 w-full"
+            role="group"
+            aria-labelledby="analytics-orders-by-status-chart-title"
+          >
             <BarChart
               accessibilityLayer
               data={data}

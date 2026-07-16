@@ -52,12 +52,19 @@ export function NewCustomersChart({
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>New customers over time</h2>
+          <h2 id="analytics-new-customers-chart-title">
+            New customers over time
+          </h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-72 w-full"
+            role="group"
+            aria-labelledby="analytics-new-customers-chart-title"
+          >
             <AreaChart
               accessibilityLayer
               data={data}

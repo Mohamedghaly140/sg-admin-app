@@ -35,12 +35,17 @@ export function PaymentMethodChart({ data }: PaymentMethodChartProps) {
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Payment methods</h2>
+          <h2 id="analytics-payment-method-chart-title">Payment methods</h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {data.length > 0 ? (
-          <ChartContainer config={chartConfig} className="h-72 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-72 w-full"
+            role="group"
+            aria-labelledby="analytics-payment-method-chart-title"
+          >
             <BarChart
               accessibilityLayer
               data={data}

@@ -38,12 +38,19 @@ export function RevenueByCategoryChart({
     <Card>
       <CardHeader>
         <CardTitle>
-          <h2>Revenue by category</h2>
+          <h2 id="analytics-revenue-by-category-chart-title">
+            Revenue by category
+          </h2>
         </CardTitle>
       </CardHeader>
       <CardContent>
         {data.some((category) => category.revenue > 0) ? (
-          <ChartContainer config={chartConfig} className="h-80 w-full">
+          <ChartContainer
+            config={chartConfig}
+            className="h-80 w-full"
+            role="group"
+            aria-labelledby="analytics-revenue-by-category-chart-title"
+          >
             <BarChart
               accessibilityLayer
               data={data}

@@ -36,6 +36,8 @@ export default function ImageUploader({
   } = useImageUpload({ folder, defaultImageId, defaultImageUrl });
   const isUploading = state.status === "uploading";
   const isDisabled = pending || isUploading;
+  const labelId = `${imageIdName}-upload-label`;
+  const fileInputId = `${imageIdName}-file-input`;
 
   useImperativeHandle(ref, () => ({ uploadPendingFile }), [uploadPendingFile]);
 
@@ -55,8 +57,11 @@ export default function ImageUploader({
       />
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium">{label}</span>
+        <span id={labelId} className="text-sm font-medium">
+          {label}
+        </span>
         <div
+          aria-labelledby={labelId}
           className={cn(
             "relative flex min-h-40 flex-col items-center justify-center gap-3 rounded-md border border-dashed bg-muted/30 p-4 text-center transition-colors",
             !isDisabled && "hover:bg-muted/50",
@@ -121,9 +126,11 @@ export default function ImageUploader({
 
           <input
             ref={fileInputRef}
+            id={fileInputId}
             type="file"
             accept="image/jpeg,image/png,image/webp"
             className="sr-only"
+            aria-label={`Choose ${label}`}
             disabled={isDisabled}
             onChange={(event) => {
               const file = event.target.files?.[0];
