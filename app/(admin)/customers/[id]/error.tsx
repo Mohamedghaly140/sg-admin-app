@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/button";
 
 export default function CustomerDetailError({
   error,
-  reset,
+  unstable_retry,
 }: {
   error: Error & { digest?: string };
-  reset: () => void;
+  unstable_retry: () => void;
 }) {
   useEffect(() => {
     console.error(error);
@@ -23,7 +23,7 @@ export default function CustomerDetailError({
         icon={<LucideTriangleAlert className="size-6" aria-hidden="true" />}
         title="Couldn't load this customer"
         description="An unexpected error occurred while loading this customer. Please try again."
-        action={<Button onClick={reset}>Try again</Button>}
+        action={<Button onClick={() => unstable_retry()}>Try again</Button>}
       />
     </div>
   );
