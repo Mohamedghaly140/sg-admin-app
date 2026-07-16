@@ -12,8 +12,8 @@ Phases 1–7.
 
 ### 1. States audit (every list + detail)
 
-- [ ] Empty vs. filtered-empty (`EmptyState` with distinct copy), loading (`loading.tsx` skeletons match final layout), segment `error.tsx` boundaries.
-- [ ] `notFound()` paths verified for every `[id]` route.
+- [x] Empty vs. filtered-empty (`EmptyState` with distinct copy), loading (`loading.tsx` skeletons match final layout), segment `error.tsx` boundaries.
+- [x] `notFound()` paths verified for every `[id]` route.
 
 ### 2. Auth consistency
 
