@@ -3,8 +3,7 @@
     "deny": [
       "Bash(**/.env*)",
       "Read(**/.env*)",
-      "Write(**/.env*)",
-      "Write(**/generated/**)",
+      "Edit(**/.env*)",
       "Edit(**/generated/**)"
     ]
   },
