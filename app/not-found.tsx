@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LucideFileQuestion } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { EmptyState } from "@/components/shared/empty-state";
 
 export default function NotFound() {
@@ -11,7 +11,9 @@ export default function NotFound() {
         title="Page not found"
         description="The page you're looking for doesn't exist."
         action={
-          <Button render={<Link href="/" />}>Go home</Button>
+          <Link href="/" className={buttonVariants()}>
+            Go home
+          </Link>
         }
       />
     </main>

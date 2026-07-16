@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LucidePackageOpen, LucidePlus } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
 import { redirectToLastPageIfOutOfRange } from "@/lib/pagination";
 
@@ -52,10 +52,10 @@ export default async function ProductsFeature({
   );
 
   const newProductButton = (
-    <Button render={<Link href="/products/new" />}>
+    <Link href="/products/new" className={buttonVariants()}>
       <LucidePlus data-icon="inline-start" aria-hidden="true" />
       New product
-    </Button>
+    </Link>
   );
 
   return (
