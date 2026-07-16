@@ -37,4 +37,5 @@ lucide-react, always imported with the `Lucide` prefix: `LucideSearch`, `LucideT
 - Colors come from the `--chart-1` … `--chart-5` CSS variables in `globals.css` — never hard-coded hex.
 - Money axes/tooltips format via `formatEGP()` from `lib/format.ts`. Dashboard/analytics endpoints return plain **numbers**, so values chart directly.
 - Wrap charts in a fixed-height container (Recharts' `ResponsiveContainer` needs one) and give each a loading `skeleton` of the same height to avoid layout shift.
+- Every chart pairs with a `ChartDataTable` (`components/shared/chart-data-table/`) — a visually-hidden table of the same data, rendered next to the `ChartContainer`, so screen-reader users get the numbers. Reuse the chart's existing formatters (`formatEGP`, status/date label fns) for its cells.
 - Handle empty ranges: render an `EmptyState`, not an empty axis frame.

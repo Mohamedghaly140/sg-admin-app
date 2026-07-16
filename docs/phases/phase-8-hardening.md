@@ -24,9 +24,9 @@ Phases 1–7.
 
 ### 3. Responsive & a11y
 
-- [ ] Sidebar collapses to a `sheet` on mobile; tables scroll horizontally in their own container.
+- [x] Sidebar collapses to a `sheet` on mobile (shadcn `Sidebar` + `SidebarTrigger`); tables scroll horizontally in their own `overflow-x-auto` container.
 - [ ] Keyboard pass: dialogs trap focus, forms submit on Enter, row menus reachable.
-- [ ] Labels/aria on all inputs (FormControl covers most — audit custom selects/switches), icon-only buttons get `aria-label`, charts get text alternatives.
+- [x] Labels/aria on all inputs (FormControl covers most — audit custom selects/switches), icon-only buttons get `aria-label`, charts get text alternatives (`ChartDataTable` sr-only data table per chart).
 
 ### 4. Consistency sweep
 

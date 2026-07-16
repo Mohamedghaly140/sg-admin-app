@@ -3,6 +3,7 @@
 import { LucideChartNoAxesColumn } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -39,6 +40,13 @@ export function PaymentMethodChart({ data }: PaymentMethodChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {data.length > 0 && (
+          <ChartDataTable
+            caption="Payment methods"
+            columns={["Method", "Orders"]}
+            rows={data.map((item) => [item.method, item.count])}
+          />
+        )}
         {data.length > 0 ? (
           <ChartContainer
             config={chartConfig}

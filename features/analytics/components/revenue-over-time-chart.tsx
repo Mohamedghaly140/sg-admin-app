@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -58,6 +59,16 @@ export function RevenueOverTimeChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {data.length > 0 && (
+          <ChartDataTable
+            caption="Revenue over time"
+            columns={["Period", "Revenue"]}
+            rows={data.map((point) => [
+              formatAxisDate(point.date),
+              formatEGP(point.revenue),
+            ])}
+          />
+        )}
         {data.length > 0 ? (
           <ChartContainer
             config={chartConfig}

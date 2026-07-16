@@ -3,6 +3,7 @@
 import { LucideChartNoAxesColumn } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -49,6 +50,17 @@ export function GeographyChart({ data }: GeographyChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {data.length > 0 && (
+          <ChartDataTable
+            caption="Orders and revenue by governorate"
+            columns={["Governorate", "Orders", "Revenue"]}
+            rows={data.map((row) => [
+              row.governorate,
+              row.orderCount,
+              formatEGP(row.revenue),
+            ])}
+          />
+        )}
         {data.length > 0 ? (
           <div className="grid gap-6 xl:grid-cols-2">
             <section aria-labelledby="geography-orders-title">

@@ -3,6 +3,7 @@
 import { LucideChartNoAxesColumn } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -44,6 +45,16 @@ export function OrdersStatusChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {ordersByStatus.length > 0 && (
+          <ChartDataTable
+            caption="Orders by status"
+            columns={["Status", "Orders"]}
+            rows={withDefaultOrderStatuses(ordersByStatus).map((item) => [
+              formatStatus(item.status),
+              item.count,
+            ])}
+          />
+        )}
         {ordersByStatus.length > 0 ? (
           <ChartContainer
             config={chartConfig}

@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -49,6 +50,16 @@ export function RevenueChart({ revenueByDay, asOf }: RevenueChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {revenueByDay.length > 0 && (
+          <ChartDataTable
+            caption="Revenue — last 30 days"
+            columns={["Date", "Revenue"]}
+            rows={revenueByDay.map((day) => [
+              formatDate(day.date),
+              formatEGP(day.revenue),
+            ])}
+          />
+        )}
         {revenueByDay.length > 0 ? (
           <ChartContainer
             config={chartConfig}

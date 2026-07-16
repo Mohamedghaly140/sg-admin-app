@@ -42,6 +42,7 @@ docs/                     # this documentation
 | `tag-input/` | `TagInput` — multi-value text input that submits repeated hidden fields |
 | `confirm-dialog/` | `ConfirmDialog` — AlertDialog wrapper for destructive actions |
 | `empty-state/` | `EmptyState` — icon + title + description + optional action |
+| `chart-data-table/` | `ChartDataTable` — visually-hidden (`sr-only`) data table paired with each Recharts chart as its screen-reader text alternative |
 | `image-uploader/` | `ImageUploader` — signed Cloudinary upload UI with progress and hidden `imageId` / `imageUrl` fields |
 | `spinner/` | `Spinner` — centered loading indicator |
 | `redirect-toast/` | `RedirectToast` — shows the "toast" cookie message after a redirect |

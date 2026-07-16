@@ -10,6 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { ChartDataTable } from "@/components/shared/chart-data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -58,6 +59,13 @@ export function NewCustomersChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {data.length > 0 && (
+          <ChartDataTable
+            caption="New customers over time"
+            columns={["Period", "New customers"]}
+            rows={data.map((point) => [formatAxisDate(point.date), point.count])}
+          />
+        )}
         {data.length > 0 ? (
           <ChartContainer
             config={chartConfig}
