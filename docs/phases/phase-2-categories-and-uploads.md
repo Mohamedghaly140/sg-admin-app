@@ -31,10 +31,12 @@ Phase 1 (API client, providers, shell, form primitives).
 
 ## Acceptance criteria
 
-- [ ] Full category + sub-category CRUD works against the live API.
-- [ ] Backend 422s render under the matching inputs (same UI path as Zod errors).
+- [x] Full category + sub-category CRUD works against the live API.
+- [x] Backend 422s render under the matching inputs (same UI path as Zod errors).
 - [x] Both 409s toast their specific human messages.
-- [ ] A cover image uploads browser → Cloudinary, renders transformed via `cldUrl`, and survives create/edit round-trips.
+- [x] A cover image uploads browser → Cloudinary, renders transformed via `cldUrl`, and survives create/edit round-trips.
 - [x] `slug` is displayed but never editable and never sent.
 - [x] Search + pagination are URL-shareable; page resets to 1 on search change.
-- [ ] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+- [x] `bun lint` and `bun run build` pass; [tracker](./README.md) updated.
+
+**Phase 2 signed off — 2026-07-16.** All acceptance criteria verified via Playwright as MANAGER against the live API and live Cloudinary; full QA in [`docs/qa/phase-2-qa-report.md`](../qa/phase-2-qa-report.md).
