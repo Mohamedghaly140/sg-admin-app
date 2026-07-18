@@ -28,6 +28,10 @@ bunx shadcn@latest add <item>  # install a shadcn primitive
 
 No automated test suite is configured (no Jest/Vitest, no `*.test.*` files) — rely on `bun lint`, `bunx tsc --noEmit`, and manual verification in the browser.
 
+## Git
+
+- Commit messages must **not** include a `Co-Authored-By` trailer or any Claude Code / AI-attribution line.
+
 ## Implementation status
 
 **Check `docs/phases/README.md` before assuming anything exists.** Providers, `lib/api/`, `lib/env.ts`, `proxy.ts`, `features/`, and most UI primitives are phase tasks, not givens.
