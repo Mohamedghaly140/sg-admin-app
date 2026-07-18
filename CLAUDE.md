@@ -34,7 +34,9 @@ No automated test suite is configured (no Jest/Vitest, no `*.test.*` files) — 
 
 ## Implementation status
 
-**Check `docs/phases/README.md` before assuming anything exists.** Providers, `lib/api/`, `lib/env.ts`, `proxy.ts`, `features/`, and most UI primitives are phase tasks, not givens.
+Phases 1–7 are **done** — all features (`categories`, `products`, `orders`, `coupons`, `shipping-zones`, `customers`, `staff-users`, `dashboard`, `analytics`), `lib/api/`, `proxy.ts`, and the shared primitives exist. Phase 8 (hardening/QA) is in progress. `docs/phases/README.md` is the status tracker — keep its table current when starting/finishing a phase.
+
+**Deferred (backend hasn't shipped these — they 404, do not build against them):** `POST /admin/orders/:id/verify-payment` (card payments; all orders are CASH) and `POST /admin/notifications/broadcast`.
 
 ## Architecture
 
@@ -42,6 +44,8 @@ No automated test suite is configured (no Jest/Vitest, no `*.test.*` files) — 
 - **Mutations**: Server Actions returning `ActionState` — Zod parse → `apiFetch` → `revalidatePath` + `toActionState`, errors via `fromErrorToActionState`. Never throw out of an action (except `redirect`/`notFound`).
 - **URL state**: nuqs — one params schema per feature (`hooks/use-<feature>-params.ts`) driving both `createSearchParamsCache` and `useQueryStates` (`shallow: false`). Param names match the API contract. Never `useState` for filters/pagination.
 - **Security**: the backend's 401/403 is the real gate; `proxy.ts` middleware and role-filtered nav are UX. The Clerk token never reaches the client.
+- **Uploads**: no Cloudinary SDK — the shared `ImageUploader` gets a signature from the backend (`getUploadSignature` action → `POST /admin/uploads/signature`) and the browser uploads straight to Cloudinary. Gallery reorder uses dnd-kit. See `docs/conventions/05-media.md`.
+- **`apiFetch`** (`lib/api/http.ts`): prefixes `${API_URL}/api/v1`, always `cache: "no-store"`, unwraps the envelope, throws `ApiError(status, code, message, errors)` on failure; 204 → `data: undefined`. Auth redirects via `redirectOnAuthError` in non-`ActionState` contexts.
 
 Full spec: `docs/conventions/01-data-flow.md`.
 
@@ -53,10 +57,11 @@ No `src/` — `@/*` maps to the repo root.
 app/                 # thin pages/layouts only — zero logic
 features/<name>/     # components/ hooks/ actions/ queries/ schema/ types/ index.tsx
                      # index.tsx exports default <Name>Feature (Server Component)
-lib/                 # utils.ts (cn), env.ts, api/, format.ts
+lib/                 # utils.ts (cn), env.ts, api/, format.ts, pagination.ts
 components/ui/       # shadcn primitives only (base-nova on @base-ui/react)
 components/shared/   # form system, form-control, submit-button, confirm-dialog,
-                     # empty-state, spinner, redirect-toast — prefer these
+                     # empty-state, spinner, redirect-toast, image-uploader,
+                     # tag-input, chart-data-table, app-shell — prefer these
 actions/             # cross-cutting Server Actions (cookies.actions.ts: "toast" flash cookie)
 ```
 

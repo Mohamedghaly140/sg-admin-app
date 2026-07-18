@@ -44,9 +44,11 @@ bunx shadcn@latest add <item>  # install a shadcn primitive
 
 ## Implementation Status
 
-Check `docs/phases/README.md` before assuming anything exists. Providers,
-`lib/api/`, `lib/env.ts`, `proxy.ts`, `features/`, and most UI primitives are
-phase tasks, not givens.
+`docs/phases/README.md` is the status tracker — keep its table current.
+Phases 1–7 are done: all features, `lib/api/`, `proxy.ts`, and the shared
+primitives exist. Phase 8 (hardening/QA) is in progress. Deferred backend
+endpoints (`verify-payment`, notifications broadcast) 404 — do not build
+against them.
 
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
