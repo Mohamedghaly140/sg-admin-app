@@ -11,7 +11,12 @@ function Dialog({ ...props }: DialogPrimitive.Root.Props) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />
 }
 
-function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
+function DialogTrigger({ render, ...props }: DialogPrimitive.Trigger.Props) {
+  // Let a composed component own the final element's slot.
+  if (render) {
+    return <DialogPrimitive.Trigger render={render} {...props} />
+  }
+
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
 }
 
