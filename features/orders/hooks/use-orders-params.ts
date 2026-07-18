@@ -7,6 +7,8 @@ import {
   parseAsStringLiteral,
 } from "nuqs/server";
 
+import { parseAsApiDate } from "@/lib/nuqs-parsers";
+
 export const orderStatusValues = [
   "PENDING",
   "PROCESSING",
@@ -27,8 +29,8 @@ export const ordersParams = {
   status: parseAsStringLiteral(orderStatusFilterValues).withDefault(""),
   paymentMethod: parseAsStringLiteral(paymentMethodFilterValues).withDefault(""),
   isPaid: parseAsStringLiteral(optionalPaidFilterValues).withDefault(""),
-  from: parseAsString.withDefault(""),
-  to: parseAsString.withDefault(""),
+  from: parseAsApiDate.withDefault(""),
+  to: parseAsApiDate.withDefault(""),
   page: parseAsInteger.withDefault(1),
   limit: parseAsInteger.withDefault(20),
 };

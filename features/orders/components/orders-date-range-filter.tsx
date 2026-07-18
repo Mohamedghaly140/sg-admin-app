@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { format, isValid, parse } from "date-fns";
+import { format } from "date-fns";
 import { LucideCalendarDays } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
@@ -13,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { formatDate } from "@/lib/format";
+import { parseAsApiDate } from "@/lib/nuqs-parsers";
 
 import { useOrdersParams } from "../hooks/use-orders-params";
 
@@ -90,17 +91,17 @@ export function OrdersDateRangeFilter() {
 }
 
 function toDateRange(from: string, to: string): DateRange | undefined {
-  const fromDate = parseDateOnly(from);
+  const fromDate = parseDateValue(from);
   if (!fromDate) {
     return undefined;
   }
 
-  return { from: fromDate, to: parseDateOnly(to) };
+  return { from: fromDate, to: parseDateValue(to) };
 }
 
 function formatDateRangeLabel(from: string, to: string): string {
-  const hasFrom = Boolean(parseDateOnly(from));
-  const hasTo = Boolean(parseDateOnly(to));
+  const hasFrom = Boolean(parseDateValue(from));
+  const hasTo = Boolean(parseDateValue(to));
 
   if (hasFrom && hasTo) {
     return `${formatDate(from)} – ${formatDate(to)}`;
@@ -115,13 +116,11 @@ function formatDateRangeLabel(from: string, to: string): string {
   return "Date range";
 }
 
-function parseDateOnly(value: string): Date | undefined {
-  if (!value) {
-    return undefined;
-  }
-
-  const date = parse(value, DATE_PARAM_FORMAT, new Date());
-  return isValid(date) && format(date, DATE_PARAM_FORMAT) === value
-    ? date
+// `from`/`to` may be `YYYY-MM-DD` or a full ISO UTC datetime (see
+// `parseAsApiDate`) — validate against that shared contract, not just the
+// date-only shape the calendar itself writes.
+function parseDateValue(value: string): Date | undefined {
+  return value && parseAsApiDate.parse(value) !== null
+    ? new Date(value)
     : undefined;
 }

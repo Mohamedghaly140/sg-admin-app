@@ -3,9 +3,10 @@ import { useQueryStates } from "nuqs";
 import {
   createSearchParamsCache,
   createSerializer,
-  parseAsString,
   parseAsStringLiteral,
 } from "nuqs/server";
+
+import { parseAsDateOnly } from "@/lib/nuqs-parsers";
 
 export const analyticsTabValues = [
   "sales",
@@ -18,8 +19,8 @@ export const analyticsTabValues = [
 export type AnalyticsTab = (typeof analyticsTabValues)[number];
 
 export const analyticsParams = {
-  from: parseAsString.withDefault(""),
-  to: parseAsString.withDefault(""),
+  from: parseAsDateOnly.withDefault(""),
+  to: parseAsDateOnly.withDefault(""),
   tab: parseAsStringLiteral(analyticsTabValues).withDefault("sales"),
 };
 

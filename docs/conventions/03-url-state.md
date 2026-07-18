@@ -8,13 +8,14 @@ All filter, pagination, sort, and search state lives in the URL via **nuqs v2** 
 // features/orders/hooks/use-orders-params.ts
 import { createSearchParamsCache, parseAsInteger, parseAsString } from "nuqs/server";
 import { useQueryStates } from "nuqs";
+import { parseAsApiDate } from "@/lib/nuqs-parsers";
 
 export const ordersParams = {
   status: parseAsString.withDefault(""),
   paymentMethod: parseAsString.withDefault(""),
   search: parseAsString.withDefault(""),
-  from: parseAsString.withDefault(""),
-  to: parseAsString.withDefault(""),
+  from: parseAsApiDate.withDefault(""),
+  to: parseAsApiDate.withDefault(""),
   page: parseAsInteger.withDefault(1),
   limit: parseAsInteger.withDefault(20),
 };
@@ -41,6 +42,9 @@ setParams({ status: next, page: 1 });
 ## Conventions
 
 - **Param names match the API contract exactly** — the URL param is the query param sent to the API. Check the feature's `integration/admin/` doc before naming anything.
+- **Date params never use plain `parseAsString`** (`lib/nuqs-parsers.ts`) — it validates the format and falls back to the default on anything malformed (e.g. a hand-edited or stale URL), so an invalid date never reaches the API as an unvalidated string. Plain `parseAsString` on a date param lets a 422 `VALIDATION_ERROR` propagate uncaught to `error.tsx` (`lib/api/handle-auth-error.ts` only maps auth-shaped codes). Which parser depends on the endpoint's documented date format (`integration/admin/00-conventions.md#data-formats`):
+  - **`parseAsDateOnly`** — strictly `YYYY-MM-DD` only. Use only where the feature's API doc narrows dates to date-only, e.g. Analytics.
+  - **`parseAsApiDate`** — `YYYY-MM-DD` **or** a full ISO 8601 UTC datetime (`2026-07-09T12:00:00.000Z`). Use for `createdAt`-range filters under the general "Dates are ISO 8601 UTC strings" convention, e.g. Orders — a date-only-only parser would silently drop a documented-valid timestamp value.
 - **Reset `page` to 1** whenever any other filter changes.
 - Defaults are explicit via `.withDefault(...)`; empty string = "no filter" → **omit** the param from the API call (don't send `status=`).
 - Debounce free-text `search` inputs (~300 ms) before writing to the URL.
