@@ -2,7 +2,7 @@ import { LucideShoppingCart } from "lucide-react";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { Badge } from "@/components/ui/badge";
+import { OrderStatusBadge } from "@/components/shared/order-status-badge";
 import {
   Card,
   CardContent,
@@ -19,25 +19,10 @@ import {
 } from "@/components/ui/table";
 import { formatDateTime, formatEGP } from "@/lib/format";
 
-import type {
-  DashboardOrderStatus,
-  DashboardRecentOrder,
-} from "../types";
+import type { DashboardRecentOrder } from "../types";
 
 type RecentOrdersTableProps = {
   orders: DashboardRecentOrder[];
-};
-
-const statusVariants: Record<
-  DashboardOrderStatus,
-  "default" | "destructive" | "outline" | "secondary"
-> = {
-  PENDING: "outline",
-  PROCESSING: "secondary",
-  SHIPPED: "secondary",
-  DELIVERED: "default",
-  CANCELLED: "destructive",
-  REFUNDED: "outline",
 };
 
 export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
@@ -74,9 +59,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                   </TableCell>
                   <TableCell>{order.customerName || "Guest"}</TableCell>
                   <TableCell>
-                    <Badge variant={statusVariants[order.status]}>
-                      {order.status}
-                    </Badge>
+                    <OrderStatusBadge status={order.status} />
                   </TableCell>
                   <TableCell>{order.paymentMethod}</TableCell>
                   <TableCell>{formatEGP(order.totalOrderPrice)}</TableCell>

@@ -1,4 +1,5 @@
-import { Badge } from "@/components/ui/badge";
+import { OrderStatusBadge } from "@/components/shared/order-status-badge";
+import { PaymentStatusBadge } from "@/components/shared/payment-status-badge";
 import { handleAuthError } from "@/lib/api/handle-auth-error";
 import { formatDateTime } from "@/lib/format";
 
@@ -6,7 +7,6 @@ import { OrderCustomerPanel } from "./components/order-customer-panel";
 import { OrderItemsTable } from "./components/order-items-table";
 import { MarkOrderPaidButton } from "./components/mark-order-paid-button";
 import { OrderStatusControl } from "./components/order-status-control";
-import { OrderStatusBadge } from "./components/order-status-badge";
 import { OrderTotalsCard } from "./components/order-totals-card";
 import { getOrder } from "./queries/get-order";
 
@@ -33,9 +33,7 @@ export default async function OrderDetailFeature({
         <div className="flex flex-wrap items-center gap-2">
           <h1 className="text-base font-medium">{order.humanOrderId}</h1>
           <OrderStatusBadge status={order.status} />
-          <Badge variant={order.isPaid ? "default" : "outline"}>
-            {order.isPaid ? "Paid" : "Unpaid"}
-          </Badge>
+          <PaymentStatusBadge isPaid={order.isPaid} />
         </div>
         <dl className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
           <div className="flex gap-2">

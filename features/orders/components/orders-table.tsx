@@ -1,6 +1,7 @@
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
+import { OrderStatusBadge } from "@/components/shared/order-status-badge";
+import { PaymentStatusBadge } from "@/components/shared/payment-status-badge";
 import {
   Table,
   TableBody,
@@ -12,7 +13,6 @@ import {
 import { formatDate, formatEGP } from "@/lib/format";
 
 import type { Order } from "../types";
-import { OrderStatusBadge } from "./order-status-badge";
 
 type OrdersTableProps = {
   orders: Order[];
@@ -51,9 +51,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
               </TableCell>
               <TableCell>{order.paymentMethod}</TableCell>
               <TableCell>
-                <Badge variant={order.isPaid ? "default" : "outline"}>
-                  {order.isPaid ? "Paid" : "Unpaid"}
-                </Badge>
+                <PaymentStatusBadge isPaid={order.isPaid} />
               </TableCell>
               <TableCell>{order.itemsCount}</TableCell>
               <TableCell>{formatEGP(order.totalOrderPrice)}</TableCell>

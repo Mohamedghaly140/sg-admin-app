@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { orderStatusLabels } from "@/components/shared/order-status-badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -28,15 +29,6 @@ type OrderStatusControlProps = {
 type StatusOption = {
   status: OrderStatus;
   disabled?: boolean;
-};
-
-const statusLabels: Record<OrderStatus, string> = {
-  PENDING: "Pending",
-  PROCESSING: "Processing",
-  SHIPPED: "Shipped",
-  DELIVERED: "Delivered",
-  CANCELLED: "Cancelled",
-  REFUNDED: "Refunded",
 };
 
 function getNextStatusOptions(
@@ -139,7 +131,7 @@ export function OrderStatusControl({
                 variant={option.status === "CANCELLED" ? "destructive" : "default"}
                 onClick={() => handleSelectStatus(option.status)}
               >
-                {statusLabels[option.status]}
+                {orderStatusLabels[option.status]}
                 {option.disabled ? (
                   <span className="text-xs text-muted-foreground">
                     — mark paid first
@@ -156,7 +148,7 @@ export function OrderStatusControl({
         onOpenChange={handleDialogOpenChange}
         title={
           targetStatus
-            ? `Change status to ${statusLabels[targetStatus]}?`
+            ? `Change status to ${orderStatusLabels[targetStatus]}?`
             : "Change order status?"
         }
         description={description}

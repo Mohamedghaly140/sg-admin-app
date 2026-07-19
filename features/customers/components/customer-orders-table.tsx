@@ -2,7 +2,8 @@ import { LucideShoppingCart } from "lucide-react";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
-import { Badge } from "@/components/ui/badge";
+import { OrderStatusBadge } from "@/components/shared/order-status-badge";
+import { PaymentStatusBadge } from "@/components/shared/payment-status-badge";
 import {
   Card,
   CardContent,
@@ -57,12 +58,10 @@ export function CustomerOrdersTable({ orders }: CustomerOrdersTableProps) {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline">{order.status}</Badge>
+                    <OrderStatusBadge status={order.status} />
                   </TableCell>
                   <TableCell>
-                    <Badge variant={order.isPaid ? "default" : "outline"}>
-                      {order.isPaid ? "Paid" : "Unpaid"}
-                    </Badge>
+                    <PaymentStatusBadge isPaid={order.isPaid} />
                   </TableCell>
                   <TableCell>{formatEGP(order.totalOrderPrice)}</TableCell>
                   <TableCell>{formatDate(order.createdAt)}</TableCell>
