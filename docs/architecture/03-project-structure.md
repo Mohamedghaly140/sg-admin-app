@@ -48,6 +48,7 @@ docs/                     # this documentation
 | `redirect-toast/` | `RedirectToast` — shows the "toast" cookie message after a redirect |
 | `order-status-badge` | `OrderStatusBadge` + `orderStatusVariant` / `orderStatusLabels` maps — semantic colored badge for an order's `OrderStatus`, shared by orders, dashboard, and customers |
 | `payment-status-badge` | `PaymentStatusBadge` — Paid/Unpaid badge (success/warning) driven by `isPaid`, shared by orders and customers |
+| `active-badge` | `ActiveBadge` — Active/Inactive badge (success/outline) driven by an `active` boolean, shared by customers and staff-users |
 
 Prefer these over reinventing. New cross-feature components go here; feature-specific ones stay in `features/<feature>/components/`.
 

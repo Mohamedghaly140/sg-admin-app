@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { Badge } from "@/components/ui/badge";
+import { ActiveBadge } from "@/components/shared/active-badge";
 import {
   Card,
   CardContent,
@@ -35,11 +35,7 @@ export function CustomerProfileCard({ customer }: CustomerProfileCardProps) {
           <ProfileDetail label="Phone" value={customer.phone} />
           <ProfileDetail
             label="Account state"
-            value={
-              <Badge variant={customer.active ? "default" : "outline"}>
-                {customer.active ? "Active" : "Inactive"}
-              </Badge>
-            }
+            value={<ActiveBadge active={customer.active} />}
           />
           <ProfileDetail
             label="Joined"

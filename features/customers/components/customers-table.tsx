@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
+import { ActiveBadge } from "@/components/shared/active-badge";
 import {
   Table,
   TableBody,
@@ -45,9 +45,7 @@ export function CustomersTable({ customers }: CustomersTableProps) {
               <TableCell>{customer.email}</TableCell>
               <TableCell>{customer.phone}</TableCell>
               <TableCell>
-                <Badge variant={customer.active ? "default" : "outline"}>
-                  {customer.active ? "Active" : "Inactive"}
-                </Badge>
+                <ActiveBadge active={customer.active} />
               </TableCell>
               <TableCell>{customer.ordersCount}</TableCell>
               <TableCell>{formatDate(customer.createdAt)}</TableCell>

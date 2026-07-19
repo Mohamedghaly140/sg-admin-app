@@ -54,7 +54,7 @@ export function LowStockList({ products }: LowStockListProps) {
                       {product.categoryName} · {product.status}
                     </p>
                   </div>
-                  <Badge variant={isCritical ? "destructive" : "outline"}>
+                  <Badge variant={isCritical ? "destructive" : "warning"}>
                     {product.quantity.toLocaleString("en-EG")} left
                   </Badge>
                 </li>

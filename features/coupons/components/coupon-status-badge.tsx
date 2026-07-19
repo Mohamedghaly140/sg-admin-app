@@ -1,4 +1,6 @@
-import { Badge } from "@/components/ui/badge";
+import type { VariantProps } from "class-variance-authority";
+
+import { Badge, badgeVariants } from "@/components/ui/badge";
 
 import type { Coupon } from "../types";
 
@@ -8,16 +10,16 @@ export type CouponStatus =
   | "exhausted"
   | "deactivated";
 
-type BadgeVariant = "outline" | "default" | "secondary" | "destructive";
+type BadgeVariant = VariantProps<typeof badgeVariants>["variant"];
 
 type CouponStatusBadgeProps = {
   coupon: Coupon;
 };
 
 const statusVariants: Record<CouponStatus, BadgeVariant> = {
-  active: "default",
+  active: "success",
   expired: "destructive",
-  exhausted: "secondary",
+  exhausted: "warning",
   deactivated: "outline",
 };
 

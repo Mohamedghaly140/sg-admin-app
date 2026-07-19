@@ -103,6 +103,7 @@ Forms: caller wires `useActionState`, renders the shared `Form` + `FormControl` 
 - Tailwind v4 CSS-first: theme in `app/globals.css` (`@theme`); **no `tailwind.config.*`**.
 - Tables: server-rendered shadcn `table` + nuqs — no TanStack, no bulk actions (the API has none). Destructive actions behind `ConfirmDialog`.
 - Charts (recharts): colors from `--chart-*` CSS vars; only on dashboard/analytics.
+- **Status badges**: colour via the `Badge` **semantic variants** (`success`/`warning`/`info`/`destructive` + neutral `secondary`/`outline`) — never literal colour classes; humanize labels; reuse the shared `order-status-badge` / `payment-status-badge` / `active-badge`. Full design system: `docs/conventions/07-badges.md`.
 
 ## Naming & style
 

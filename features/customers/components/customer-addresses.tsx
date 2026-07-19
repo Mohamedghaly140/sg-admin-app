@@ -39,7 +39,7 @@ export function CustomerAddresses({ addresses }: CustomerAddressesProps) {
                 </CardTitle>
                 {address.isDefault ? (
                   <CardAction>
-                    <Badge>Default</Badge>
+                    <Badge variant="secondary">Default</Badge>
                   </CardAction>
                 ) : null}
               </CardHeader>

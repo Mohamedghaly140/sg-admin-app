@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatEGP } from "@/lib/format";
-import { cn } from "@/lib/utils";
 
 import type { DashboardMetricPair } from "../types";
 
@@ -72,11 +71,13 @@ function KpiCard({ label, metric, formatValue }: KpiCardProps) {
         </p>
         <div className="flex items-center gap-2">
           <Badge
-            variant={direction === "down" ? "destructive" : "secondary"}
-            className={cn(
-              direction === "up" &&
-                "bg-green-500/10 text-green-700 dark:text-green-400",
-            )}
+            variant={
+              direction === "up"
+                ? "success"
+                : direction === "down"
+                  ? "destructive"
+                  : "secondary"
+            }
           >
             <DeltaIcon data-icon="inline-start" aria-hidden="true" />
             {delta === null ? "—" : `${Math.abs(delta).toFixed(1)}%`}

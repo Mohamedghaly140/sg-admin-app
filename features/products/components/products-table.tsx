@@ -1,4 +1,6 @@
-import { Badge } from "@/components/ui/badge";
+import type { VariantProps } from "class-variance-authority";
+
+import { Badge, badgeVariants } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -21,11 +23,17 @@ type ProductsTableProps = {
 
 const statusVariants: Record<
   ProductStatus,
-  "outline" | "default" | "secondary"
+  VariantProps<typeof badgeVariants>["variant"]
 > = {
   DRAFT: "outline",
-  ACTIVE: "default",
+  ACTIVE: "success",
   ARCHIVED: "secondary",
+};
+
+const statusLabels: Record<ProductStatus, string> = {
+  DRAFT: "Draft",
+  ACTIVE: "Active",
+  ARCHIVED: "Archived",
 };
 
 export function ProductsTable({ products }: ProductsTableProps) {
@@ -84,7 +92,7 @@ export function ProductsTable({ products }: ProductsTableProps) {
               <TableCell>{product.sold}</TableCell>
               <TableCell>
                 <Badge variant={statusVariants[product.status]}>
-                  {product.status}
+                  {statusLabels[product.status]}
                 </Badge>
               </TableCell>
               <TableCell>

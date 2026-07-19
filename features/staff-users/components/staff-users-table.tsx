@@ -1,3 +1,4 @@
+import { ActiveBadge } from "@/components/shared/active-badge";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -49,9 +50,7 @@ export function StaffUsersTable({
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={user.active ? "default" : "outline"}>
-                  {user.active ? "Active" : "Inactive"}
-                </Badge>
+                <ActiveBadge active={user.active} />
               </TableCell>
               <TableCell>{formatDate(user.createdAt)}</TableCell>
               <TableCell>

@@ -21,6 +21,15 @@ Before building UI, check `components/shared/` ([inventory](../architecture/03-p
 
 Admin lists use plain shadcn `table` markup rendered **server-side**, with pagination/filtering/search fully server-driven via [nuqs](./03-url-state.md) and the API's `page`/`limit`/`meta`. **No TanStack Table, no client-side sorting/filtering, no bulk row selection** — the API has no bulk endpoints. Row actions (edit/delete/toggle) live in a dropdown-menu or inline buttons per row.
 
+## Status badges
+
+Status/state pills use the `Badge` primitive's **semantic variants** (`success`,
+`warning`, `info`, `destructive`, plus neutral `secondary`/`outline`) — colour
+encodes meaning, and you **never apply literal colour classes to a badge**. Reuse
+the shared badges (`order-status-badge`, `payment-status-badge`, `active-badge`)
+rather than re-implementing the pattern. Full spec, token values, and the status
+catalogue: [`07-badges.md`](./07-badges.md).
+
 ## Tailwind CSS v4
 
 - CSS-first: all theme tokens live in `app/globals.css` (`@theme`, `:root` / `.dark` palettes). **No `tailwind.config.js/ts` — do not create one.**
