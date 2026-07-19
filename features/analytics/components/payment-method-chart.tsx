@@ -1,9 +1,9 @@
 "use client";
 
 import { LucideChartNoAxesColumn } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { ChartDataTable } from "@/components/shared/chart-data-table";
+import { DistributionBar } from "@/components/shared/distribution-bar";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -11,12 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
 
 import type { SalesAnalytics } from "../types";
 
@@ -24,14 +18,9 @@ type PaymentMethodChartProps = {
   data: SalesAnalytics["paymentMethodSplit"];
 };
 
-const chartConfig = {
-  count: {
-    label: "Orders",
-    color: "var(--chart-4)",
-  },
-} satisfies ChartConfig;
-
 export function PaymentMethodChart({ data }: PaymentMethodChartProps) {
+  const hasData = data.some((item) => item.count > 0);
+
   return (
     <Card>
       <CardHeader>
@@ -40,55 +29,23 @@ export function PaymentMethodChart({ data }: PaymentMethodChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {data.length > 0 && (
+        {hasData ? (
           <ChartDataTable
             caption="Payment methods"
             columns={["Method", "Orders"]}
-            rows={data.map((item) => [item.method, item.count])}
+            rows={data.map((item) => [formatLabel(item.method), item.count])}
           />
-        )}
-        {data.length > 0 ? (
-          <ChartContainer
-            config={chartConfig}
-            className="h-72 w-full"
-            role="group"
-            aria-labelledby="analytics-payment-method-chart-title"
-          >
-            <BarChart
-              accessibilityLayer
-              data={data}
-              margin={{ left: 8, right: 8 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="var(--border)"
-                strokeOpacity={0.5}
-              />
-              <XAxis
-                dataKey="method"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={8}
-              />
-              <YAxis
-                allowDecimals={false}
-                axisLine={false}
-                tickLine={false}
-                width={32}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-count)"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ChartContainer>
+        ) : null}
+        {hasData ? (
+          <DistributionBar
+            labelledBy="analytics-payment-method-chart-title"
+            segments={data.map((item) => ({
+              label: formatLabel(item.method),
+              value: item.count,
+            }))}
+          />
         ) : (
-          <div className="flex h-72 items-center justify-center">
+          <div className="flex h-24 items-center justify-center">
             <EmptyState
               icon={
                 <LucideChartNoAxesColumn
@@ -104,4 +61,8 @@ export function PaymentMethodChart({ data }: PaymentMethodChartProps) {
       </CardContent>
     </Card>
   );
+}
+
+function formatLabel(value: string): string {
+  return value.charAt(0) + value.slice(1).toLowerCase();
 }

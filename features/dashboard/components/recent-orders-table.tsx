@@ -61,7 +61,7 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
                   <TableCell>
                     <OrderStatusBadge status={order.status} />
                   </TableCell>
-                  <TableCell>{order.paymentMethod}</TableCell>
+                  <TableCell>{formatPaymentMethod(order.paymentMethod)}</TableCell>
                   <TableCell>{formatEGP(order.totalOrderPrice)}</TableCell>
                   <TableCell>{formatDateTime(order.createdAt)}</TableCell>
                 </TableRow>
@@ -80,4 +80,8 @@ export function RecentOrdersTable({ orders }: RecentOrdersTableProps) {
       )}
     </Card>
   );
+}
+
+function formatPaymentMethod(value: string): string {
+  return value.charAt(0) + value.slice(1).toLowerCase();
 }

@@ -1,6 +1,7 @@
 import { LucideTicketPercent } from "lucide-react";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { LeaderboardBar } from "@/components/shared/leaderboard-bar";
 import {
   Card,
   CardContent,
@@ -24,6 +25,11 @@ type CouponsTableProps = {
 };
 
 export function CouponsTable({ coupons }: CouponsTableProps) {
+  const maxDiscountGiven = Math.max(
+    0,
+    ...coupons.map((coupon) => coupon.totalDiscountGiven),
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -62,8 +68,16 @@ export function CouponsTable({ coupons }: CouponsTableProps) {
                   <TableCell className="text-right tabular-nums">
                     {coupon.periodRedemptions.toLocaleString("en-EG")}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {formatEGP(coupon.totalDiscountGiven)}
+                  <TableCell className="text-right">
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="tabular-nums">
+                        {formatEGP(coupon.totalDiscountGiven)}
+                      </span>
+                      <LeaderboardBar
+                        value={coupon.totalDiscountGiven}
+                        max={maxDiscountGiven}
+                      />
+                    </div>
                   </TableCell>
                   <TableCell>{formatDateTime(coupon.expire)}</TableCell>
                 </TableRow>

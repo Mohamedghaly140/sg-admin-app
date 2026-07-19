@@ -1,9 +1,9 @@
 "use client";
 
 import { LucideChartNoAxesColumn } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { ChartDataTable } from "@/components/shared/chart-data-table";
+import { DistributionBar } from "@/components/shared/distribution-bar";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -11,12 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
 
 import {
   DASHBOARD_ORDER_STATUSES,
@@ -27,16 +21,12 @@ type OrdersStatusChartProps = {
   ordersByStatus: DashboardOrderStatusCount[];
 };
 
-const chartConfig = {
-  count: {
-    label: "Orders",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
-
 export function OrdersStatusChart({
   ordersByStatus,
 }: OrdersStatusChartProps) {
+  const normalizedData = withDefaultOrderStatuses(ordersByStatus);
+  const hasData = normalizedData.some((item) => item.count > 0);
+
   return (
     <Card>
       <CardHeader>
@@ -45,57 +35,28 @@ export function OrdersStatusChart({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {ordersByStatus.length > 0 && (
+        {hasData ? (
           <ChartDataTable
             caption="Orders by status"
             columns={["Status", "Orders"]}
-            rows={withDefaultOrderStatuses(ordersByStatus).map((item) => [
+            rows={normalizedData.map((item) => [
               formatStatus(item.status),
               item.count,
             ])}
           />
-        )}
-        {ordersByStatus.length > 0 ? (
-          <ChartContainer
-            config={chartConfig}
-            className="h-72 w-full"
-            role="group"
-            aria-labelledby="dashboard-orders-status-chart-title"
-          >
-            <BarChart
-              accessibilityLayer
-              data={withDefaultOrderStatuses(ordersByStatus)}
-              margin={{ left: 8, right: 8 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="var(--border)"
-                strokeOpacity={0.5}
+        ) : null}
+        {hasData ? (
+          <div className="flex h-72 items-center">
+            <div className="w-full">
+              <DistributionBar
+                labelledBy="dashboard-orders-status-chart-title"
+                segments={normalizedData.map((item) => ({
+                  label: formatStatus(item.status),
+                  value: item.count,
+                }))}
               />
-              <XAxis
-                dataKey="status"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={8}
-                tickFormatter={formatStatus}
-              />
-              <YAxis
-                allowDecimals={false}
-                axisLine={false}
-                tickLine={false}
-                width={32}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-count)"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ChartContainer>
+            </div>
+          </div>
         ) : (
           <div className="flex h-72 items-center justify-center">
             <EmptyState

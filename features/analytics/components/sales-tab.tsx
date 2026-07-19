@@ -31,6 +31,7 @@ export async function SalesTab({ params }: SalesTabProps) {
             label: "Total revenue (paid)",
             value: data.totalRevenue,
             formatter: formatEGP,
+            spark: data.revenueOverTime.map((point) => point.revenue),
           },
           { label: "Total orders (all statuses)", value: data.totalOrders },
           {

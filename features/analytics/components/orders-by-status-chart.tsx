@@ -1,9 +1,9 @@
 "use client";
 
 import { LucideChartNoAxesColumn } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import { ChartDataTable } from "@/components/shared/chart-data-table";
+import { DistributionBar } from "@/components/shared/distribution-bar";
 import { EmptyState } from "@/components/shared/empty-state";
 import {
   Card,
@@ -11,12 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
 
 import type { SalesAnalytics } from "../types";
 
@@ -24,14 +18,9 @@ type OrdersByStatusChartProps = {
   data: SalesAnalytics["ordersByStatus"];
 };
 
-const chartConfig = {
-  count: {
-    label: "Orders",
-    color: "var(--chart-2)",
-  },
-} satisfies ChartConfig;
-
 export function OrdersByStatusChart({ data }: OrdersByStatusChartProps) {
+  const hasData = data.some((item) => item.count > 0);
+
   return (
     <Card>
       <CardHeader>
@@ -42,56 +31,23 @@ export function OrdersByStatusChart({ data }: OrdersByStatusChartProps) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {data.length > 0 && (
+        {hasData ? (
           <ChartDataTable
             caption="Orders by status"
             columns={["Status", "Orders"]}
             rows={data.map((item) => [formatLabel(item.status), item.count])}
           />
-        )}
-        {data.length > 0 ? (
-          <ChartContainer
-            config={chartConfig}
-            className="h-72 w-full"
-            role="group"
-            aria-labelledby="analytics-orders-by-status-chart-title"
-          >
-            <BarChart
-              accessibilityLayer
-              data={data}
-              margin={{ left: 8, right: 8 }}
-            >
-              <CartesianGrid
-                vertical={false}
-                stroke="var(--border)"
-                strokeOpacity={0.5}
-              />
-              <XAxis
-                dataKey="status"
-                axisLine={false}
-                tickLine={false}
-                tickMargin={8}
-                tickFormatter={formatLabel}
-              />
-              <YAxis
-                allowDecimals={false}
-                axisLine={false}
-                tickLine={false}
-                width={32}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
-              <Bar
-                dataKey="count"
-                fill="var(--color-count)"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ChartContainer>
+        ) : null}
+        {hasData ? (
+          <DistributionBar
+            labelledBy="analytics-orders-by-status-chart-title"
+            segments={data.map((item) => ({
+              label: formatLabel(item.status),
+              value: item.count,
+            }))}
+          />
         ) : (
-          <div className="flex h-72 items-center justify-center">
+          <div className="flex h-24 items-center justify-center">
             <EmptyState
               icon={
                 <LucideChartNoAxesColumn
@@ -110,5 +66,9 @@ export function OrdersByStatusChart({ data }: OrdersByStatusChartProps) {
 }
 
 function formatLabel(value: string): string {
-  return value.charAt(0) + value.slice(1).toLowerCase();
+  return value
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }

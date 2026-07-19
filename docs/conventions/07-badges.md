@@ -15,8 +15,8 @@ UI is monochrome, and colour is spent only where it communicates state.
 ## The semantic variants
 
 `components/ui/badge.tsx` defines these (base-nova CVA). The coloured ones use a
-soft tinted treatment — `bg-<token>/10 text-<token>` (dark: `/20`) — matching the
-original `destructive` variant, so they read calm, not loud.
+soft tinted treatment — `bg-<token>/10 text-<token>-foreground` (dark: `/20`) —
+matching the original `destructive` variant, so they read calm, not loud.
 
 | Variant | Hue | Meaning | Token |
 |---|---|---|---|
@@ -33,17 +33,19 @@ Roles and other non-health labels stay **tonal** (`default` / `secondary` /
 
 ## Theme tokens
 
-Defined in `app/globals.css`, wired exactly like `--destructive`: a raw value in
-`:root` and `.dark`, registered in `@theme inline` as `--color-success` etc.
+Defined in `app/globals.css` and registered in `@theme inline`. Each semantic
+family separates its base hue (tints, hover states, and focus rings) from a text
+foreground tuned for contrast.
 
-| Token | Light | Dark |
-|---|---|---|
-| `--success` | `oklch(0.58 0.14 155)` | `oklch(0.70 0.15 155)` |
-| `--warning` | `oklch(0.66 0.15 75)` | `oklch(0.76 0.15 80)` |
-| `--info` | `oklch(0.58 0.16 245)` | `oklch(0.70 0.15 245)` |
+| Family | Light base | Light foreground | Dark base / foreground |
+|---|---|---|---|
+| Success | `oklch(0.58 0.14 155)` | `oklch(0.45 0.14 155)` | `oklch(0.70 0.15 155)` |
+| Warning | `oklch(0.66 0.15 75)` | `oklch(0.45 0.15 75)` | `oklch(0.76 0.15 80)` |
+| Info | `oklch(0.58 0.16 245)` | `oklch(0.45 0.16 245)` | `oklch(0.70 0.15 245)` |
 
-Both themes are tuned so `text-<token>` stays legible on the `/10`–`/20` tint. If
-you retune, re-check contrast in light **and** dark.
+The dark foreground aliases the brighter dark base token. Both themes are tuned
+so `text-<token>-foreground` meets WCAG AA on the `/10`–`/20` tint. If you
+retune either token, re-check contrast in light **and** dark.
 
 ## Status catalogue
 

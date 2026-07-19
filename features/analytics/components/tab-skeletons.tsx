@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 import type { AnalyticsTab } from "../hooks/use-analytics-params";
 
@@ -12,10 +13,19 @@ export function TabSkeleton({ tab }: TabSkeletonProps) {
 
   return (
     <div className="flex flex-col gap-4" aria-hidden="true">
-      {layout.kpis > 0 ? <KpiSkeletons count={layout.kpis} /> : null}
+      {layout.kpis > 0 ? (
+        <KpiSkeletons
+          count={layout.kpis}
+          sparklineIndex={layout.sparklineIndex}
+        />
+      ) : null}
       <div className="grid gap-4 xl:grid-cols-2">
-        {Array.from({ length: layout.charts }).map((_, index) => (
-          <ChartSkeleton key={index} />
+        {layout.charts.map((chart, index) => (
+          <ChartSkeleton
+            key={index}
+            size={chart.size}
+            wide={chart.wide}
+          />
         ))}
       </div>
       {layout.table ? <TableSkeleton /> : null}
@@ -46,16 +56,48 @@ export function AnalyticsLoadingSkeleton() {
 
 const tabSkeletonLayout: Record<
   AnalyticsTab,
-  { kpis: number; charts: number; table: boolean }
+  {
+    kpis: number;
+    sparklineIndex?: number;
+    charts: { size: "default" | "distribution"; wide?: boolean }[];
+    table: boolean;
+  }
 > = {
-  sales: { kpis: 4, charts: 3, table: false },
-  products: { kpis: 3, charts: 1, table: true },
-  customers: { kpis: 3, charts: 1, table: true },
-  coupons: { kpis: 3, charts: 0, table: true },
-  geography: { kpis: 0, charts: 1, table: false },
+  sales: {
+    kpis: 4,
+    sparklineIndex: 0,
+    charts: [
+      { size: "default", wide: true },
+      { size: "distribution" },
+      { size: "distribution" },
+    ],
+    table: false,
+  },
+  products: {
+    kpis: 3,
+    charts: [{ size: "default" }],
+    table: true,
+  },
+  customers: {
+    kpis: 3,
+    sparklineIndex: 1,
+    charts: [{ size: "default" }],
+    table: true,
+  },
+  coupons: { kpis: 3, charts: [], table: true },
+  geography: {
+    kpis: 0,
+    charts: [{ size: "default" }],
+    table: false,
+  },
 };
 
-function KpiSkeletons({ count }: { count: number }) {
+type KpiSkeletonsProps = {
+  count: number;
+  sparklineIndex?: number;
+};
+
+function KpiSkeletons({ count, sparklineIndex }: KpiSkeletonsProps) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {Array.from({ length: count }).map((_, index) => (
@@ -64,7 +106,12 @@ function KpiSkeletons({ count }: { count: number }) {
             <Skeleton className="h-4 w-32" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-8 w-28" />
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-8 w-28" />
+              {index === sparklineIndex ? (
+                <Skeleton className="h-10 w-full" />
+              ) : null}
+            </div>
           </CardContent>
         </Card>
       ))}
@@ -72,14 +119,24 @@ function KpiSkeletons({ count }: { count: number }) {
   );
 }
 
-function ChartSkeleton() {
+type ChartSkeletonProps = {
+  size: "default" | "distribution";
+  wide?: boolean;
+};
+
+function ChartSkeleton({ size, wide = false }: ChartSkeletonProps) {
   return (
-    <Card>
+    <Card className={cn(wide && "xl:col-span-2")}>
       <CardHeader>
         <Skeleton className="h-5 w-44" />
       </CardHeader>
       <CardContent>
-        <Skeleton className="h-72 w-full" />
+        <Skeleton
+          className={cn(
+            "w-full",
+            size === "distribution" ? "h-24" : "h-72",
+          )}
+        />
       </CardContent>
     </Card>
   );

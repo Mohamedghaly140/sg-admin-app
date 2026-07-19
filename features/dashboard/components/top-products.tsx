@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { LeaderboardBar } from "@/components/shared/leaderboard-bar";
 import {
   Card,
   CardContent,
@@ -18,6 +19,8 @@ type TopProductsProps = {
 };
 
 export function TopProducts({ products }: TopProductsProps) {
+  const maxRevenue = Math.max(0, ...products.map((product) => product.revenue));
+
   return (
     <Card>
       <CardHeader>
@@ -28,8 +31,16 @@ export function TopProducts({ products }: TopProductsProps) {
       <CardContent>
         {products.length > 0 ? (
           <ul className="flex flex-col divide-y">
-            {products.map((product) => (
-              <li key={product.id} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+            {products.map((product, index) => (
+              <li
+                key={product.id}
+                className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                <span className="w-5 shrink-0 text-right font-mono text-xs text-muted-foreground tabular-nums">
+                  <span className="sr-only">Rank </span>
+                  <span aria-hidden="true">#</span>
+                  {index + 1}
+                </span>
                 <Image
                   src={cldUrl(product.imageUrl, {
                     width: 48,
@@ -54,13 +65,17 @@ export function TopProducts({ products }: TopProductsProps) {
                     {product.categoryName}
                   </p>
                 </div>
-                <div className="shrink-0 text-right">
+                <div className="flex shrink-0 flex-col items-end gap-1 text-right">
                   <p className="font-mono text-sm font-medium tabular-nums">
                     {formatEGP(product.revenue)}
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {product.units.toLocaleString("en-EG")} units
                   </p>
+                  <LeaderboardBar
+                    value={product.revenue}
+                    max={maxRevenue}
+                  />
                 </div>
               </li>
             ))}

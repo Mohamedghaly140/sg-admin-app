@@ -28,6 +28,7 @@ export default async function DashboardFeature() {
 
   return (
     <DashboardMetrics
+      asOf={asOf}
       title="Dashboard"
       subtitle="Store performance, recent activity, and inventory at a glance."
     >

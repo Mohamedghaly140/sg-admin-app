@@ -26,7 +26,11 @@ export async function CustomersTab({ params }: CustomersTabProps) {
       <AnalyticsKpiCards
         items={[
           { label: "Total customers (all time)", value: data.totalCustomers },
-          { label: "New customers (in range)", value: data.newThisPeriod },
+          {
+            label: "New customers (in range)",
+            value: data.newThisPeriod,
+            spark: data.newCustomersOverTime.map((point) => point.count),
+          },
           {
             label: "Active customers (in range)",
             value: data.activeThisPeriod,

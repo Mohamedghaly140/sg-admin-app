@@ -2,6 +2,7 @@ import { LucideUsers } from "lucide-react";
 import Link from "next/link";
 
 import { EmptyState } from "@/components/shared/empty-state";
+import { LeaderboardBar } from "@/components/shared/leaderboard-bar";
 import {
   Card,
   CardContent,
@@ -25,6 +26,11 @@ type TopSpendersTableProps = {
 };
 
 export function TopSpendersTable({ customers }: TopSpendersTableProps) {
+  const maxSpend = Math.max(
+    0,
+    ...customers.map((customer) => customer.totalSpent),
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -37,6 +43,10 @@ export function TopSpendersTable({ customers }: TopSpendersTableProps) {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-10 text-right">
+                  <span aria-hidden="true">#</span>
+                  <span className="sr-only">Rank</span>
+                </TableHead>
                 <TableHead>Customer</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead className="text-right">Orders</TableHead>
@@ -44,8 +54,11 @@ export function TopSpendersTable({ customers }: TopSpendersTableProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {customers.map((customer) => (
+              {customers.map((customer, index) => (
                 <TableRow key={customer.id}>
+                  <TableCell className="text-right tabular-nums">
+                    {index + 1}
+                  </TableCell>
                   <TableCell>
                     <Link
                       href={`/customers/${customer.id}`}
@@ -58,8 +71,16 @@ export function TopSpendersTable({ customers }: TopSpendersTableProps) {
                   <TableCell className="text-right tabular-nums">
                     {customer.ordersCount.toLocaleString("en-EG")}
                   </TableCell>
-                  <TableCell className="text-right tabular-nums">
-                    {formatEGP(customer.totalSpent)}
+                  <TableCell className="text-right">
+                    <div className="flex flex-col items-end gap-1">
+                      <span className="tabular-nums">
+                        {formatEGP(customer.totalSpent)}
+                      </span>
+                      <LeaderboardBar
+                        value={customer.totalSpent}
+                        max={maxSpend}
+                      />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

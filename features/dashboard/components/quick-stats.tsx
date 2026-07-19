@@ -1,4 +1,5 @@
 import {
+  LucideArrowUpRight,
   LucideBadgePercent,
   LucidePackageSearch,
   LucideTimer,
@@ -68,7 +69,13 @@ function QuickStatCard({
           <CardTitle>
             <h2>{label}</h2>
           </CardTitle>
-          <Icon className="size-5 text-muted-foreground" aria-hidden="true" />
+          <div className="flex items-center gap-2">
+            <Icon className="size-5 text-muted-foreground" aria-hidden="true" />
+            <LucideArrowUpRight
+              className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none"
+              aria-hidden="true"
+            />
+          </div>
         </CardHeader>
         <CardContent>
           <p className="font-mono text-2xl font-semibold tabular-nums">

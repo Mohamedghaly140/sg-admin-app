@@ -29,9 +29,12 @@ type AnalyticsToolbarProps = {
 };
 
 type PresetButtonProps = {
+  isActive: boolean;
+  onSelectPreset: (preset: AnalyticsPreset) => void;
   preset: AnalyticsPreset;
-  setParams: SetAnalyticsParams;
 };
+
+const analyticsPresets = ["7", "30", "90"] as const satisfies readonly AnalyticsPreset[];
 
 export function AnalyticsToolbar({
   asOf,
@@ -40,6 +43,14 @@ export function AnalyticsToolbar({
 }: AnalyticsToolbarProps) {
   const [open, setOpen] = React.useState(false);
   const [pendingRange, setPendingRange] = React.useState<DateRange>();
+  const [presetAnchor, setPresetAnchor] = React.useState(asOf);
+  const selectedPreset = activePreset(params, presetAnchor);
+
+  function handlePresetSelect(preset: AnalyticsPreset) {
+    const anchor = new Date();
+    setPresetAnchor(format(anchor, DATE_PARAM_FORMAT));
+    void setParams(computeRange(preset, anchor));
+  }
 
   function handleOpenChange(nextOpen: boolean) {
     setOpen(nextOpen);
@@ -114,23 +125,55 @@ export function AnalyticsToolbar({
 
       <fieldset className="flex flex-wrap gap-2">
         <legend className="sr-only">Date range presets</legend>
-        <PresetButton preset="7" setParams={setParams} />
-        <PresetButton preset="30" setParams={setParams} />
-        <PresetButton preset="90" setParams={setParams} />
+        {analyticsPresets.map((preset) => (
+          <PresetButton
+            key={preset}
+            isActive={selectedPreset === preset}
+            onSelectPreset={handlePresetSelect}
+            preset={preset}
+          />
+        ))}
       </fieldset>
     </div>
   );
 }
 
-function PresetButton({ preset, setParams }: PresetButtonProps) {
+function PresetButton({
+  isActive,
+  onSelectPreset,
+  preset,
+}: PresetButtonProps) {
   function handleClick() {
-    void setParams(computeRange(preset));
+    onSelectPreset(preset);
   }
 
   return (
-    <Button type="button" variant="outline" size="sm" onClick={handleClick}>
+    <Button
+      type="button"
+      variant={isActive ? "default" : "outline"}
+      size="sm"
+      aria-pressed={isActive}
+      onClick={handleClick}
+    >
       Last {preset} days
     </Button>
+  );
+}
+
+function activePreset(
+  params: Pick<AnalyticsParamsState, "from" | "to">,
+  anchorValue: string,
+): AnalyticsPreset | null {
+  const anchor = parseDateOnly(anchorValue);
+  if (!anchor) {
+    return null;
+  }
+
+  return (
+    analyticsPresets.find((preset) => {
+      const range = computeRange(preset, anchor);
+      return params.from === range.from && params.to === range.to;
+    }) ?? null
   );
 }
 

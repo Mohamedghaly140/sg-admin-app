@@ -9,7 +9,10 @@ export function DashboardSkeleton() {
           <Skeleton className="h-5 w-28" />
           <Skeleton className="h-4 w-80 max-w-full" />
         </div>
-        <Skeleton className="h-7 w-24" />
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-7 w-24" />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

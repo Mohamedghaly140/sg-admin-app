@@ -50,7 +50,11 @@ export function KpiCards({
 
 function KpiCard({ label, metric, formatValue }: KpiCardProps) {
   const delta = getPercentageDelta(metric);
+  const isNew = metric.previous === 0 && metric.current > 0;
   const direction = delta === null || delta === 0 ? "flat" : delta > 0 ? "up" : "down";
+  const previousValue = formatValue
+    ? formatValue(metric.previous)
+    : metric.previous.toLocaleString("en-EG");
   const DeltaIcon =
     direction === "up"
       ? LucideArrowUp
@@ -69,20 +73,28 @@ function KpiCard({ label, metric, formatValue }: KpiCardProps) {
         <p className="font-mono text-2xl font-semibold tabular-nums">
           {formatValue ? formatValue(metric.current) : metric.current.toLocaleString("en-EG")}
         </p>
-        <div className="flex items-center gap-2">
-          <Badge
-            variant={
-              direction === "up"
-                ? "success"
-                : direction === "down"
-                  ? "destructive"
-                  : "secondary"
-            }
-          >
-            <DeltaIcon data-icon="inline-start" aria-hidden="true" />
-            {delta === null ? "—" : `${Math.abs(delta).toFixed(1)}%`}
-          </Badge>
-          <span className="text-xs text-muted-foreground">vs last month</span>
+        <div className="flex flex-wrap items-center gap-2">
+          {delta === null ? (
+            <Badge variant="secondary">{isNew ? "New" : "—"}</Badge>
+          ) : (
+            <>
+              <Badge
+                variant={
+                  direction === "up"
+                    ? "success"
+                    : direction === "down"
+                      ? "destructive"
+                      : "secondary"
+                }
+              >
+                <DeltaIcon data-icon="inline-start" aria-hidden="true" />
+                {Math.abs(delta).toFixed(1)}%
+              </Badge>
+              <span className="text-xs text-muted-foreground">
+                from {previousValue} last month
+              </span>
+            </>
+          )}
         </div>
       </CardContent>
     </Card>
